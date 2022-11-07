@@ -114,7 +114,7 @@ class Klass
   optional(:optional_attribute) { :default }
   renamed(:not_renamed_attribute, :renamed_attribute)
   internal(:internal_attribute)
-  loads(:loaded_attribute, unless: &:nil?) { |x| x.to_s.downcase.to_sym }
+  loads(:loaded_attribute, unless: proc { |x| x.nil? }) { |x| x.to_s.downcase.to_sym }
   dumps(:dumped_attribute, &:hash)
   field(:calculated_attribute) { "#{required_attribute}: #{optional_attribute}" }
   hidden(:injected_dependency) { Klass::Dependency.new }
@@ -134,7 +134,9 @@ class Klass
   include Intention.new(serializable: true)
 
   required(:flag).renamed(:secret_sym_flag).loads(&:to_sym).hidden
-  internal(:items).optional { [] }.dumps { |items| items.map { |item| Item.new item } }
+  internal(:items).optional.dumps(unless: proc { |x| x.nil? }) do |items|
+    items.map { |item| Item.new item }
+  end
 end
 ```
 
@@ -168,6 +170,8 @@ TODO: Fill out below and OH! type checking stuff like `boolean` and whatnot!
 
 If any two are conflicting, takes the last. Examples / list ...
 
+Values are memoized, can configure with `unmemoize` ?...
+
 #### Class macros / module configurations
 
 `serializable` attaches `to_h`, defaults to `false`
@@ -197,6 +201,29 @@ end
 
 Klass.new 'John Smith'
 # => #<Klass:... @name="John Smith">
+```
+
+We can reference the given options hash:
+
+```rb
+require 'intention'
+
+class Klass
+  include Intention
+
+  integer(:age)
+  field(:medicare?) { age >= 65 }
+
+  def adult?
+    options_hash[:age] >= 18
+  end
+end
+
+instance = Klass.new age: 30
+instance.adult?
+# => true
+instance.medicare?
+# => false
 ```
 
 We can use mixins:
