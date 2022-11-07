@@ -134,7 +134,7 @@ class Klass
   include Intention.new(serializable: true)
 
   required(:flag).renamed(:secret_sym_flag).loads(&:to_sym).hidden
-  internal(:items).optional.dumps { |items| items.map { |item| Item.new item } }
+  internal(:items).optional { [] }.dumps { |items| items.map { |item| Item.new item } }
 end
 ```
 
