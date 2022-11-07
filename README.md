@@ -142,7 +142,7 @@ end
 
 ### Macros
 
-TODO:
+TODO: Fill out below and OH! type checking stuff like `boolean` and whatnot!
 
 #### Attribute macros
 
