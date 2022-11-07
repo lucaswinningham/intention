@@ -149,13 +149,21 @@ TODO: Fill out below and OH! type checking stuff like `boolean` and whatnot!
 `attribute` base
 
 `required` not nil AND given, error class
+
 `optional` nil OR not given, default proc
+
 <!-- `nullable` ??? since it's different from required / optional in that a value could be given but nil -->
+
 `hidden` private, not serialized, good for injected dependencies
+
 `renamed` rename incoming key
+
 `internal` does not get serialized in `to_h`
+
 `loads` run incoming value serialization
+
 `dumps` run outgoing value serialization
+
 `field` is developed from existing
 
 If any two are conflicting, takes the last. Examples / list ...
@@ -163,8 +171,11 @@ If any two are conflicting, takes the last. Examples / list ...
 #### Class macros / module configurations
 
 `serializable` attaches `to_h`, defaults to `false`
+
 `strict` throws (custom) error when extra keys given, defaults to `false`
+
 `writable` defaults to `true`
+
 `readable` defaults to `true`
 
 ### Customization
