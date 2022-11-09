@@ -160,6 +160,8 @@ TODO: Fill out below and OH! type checking stuff like `boolean` and whatnot!
 
 `renamed` rename incoming key
 
+`expected`? expect the key but do nothing with / ignore it
+
 `internal` does not get serialized in `to_h`
 
 `loads` run incoming value serialization
