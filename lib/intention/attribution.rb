@@ -20,7 +20,7 @@ module Intention
       end
 
       def attributes
-        @attributes ||= Hash.new { |hash, name| hash[name] = Attribute.new(class: self, name: name) }
+        @attributes ||= Hash.new { |h, name| h[name] = Attribute.new(class: self, name: name) }
       end
 
       def mount_attributes_on_instance

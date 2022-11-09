@@ -25,7 +25,7 @@ RSpec.describe Intention::Attribution do
     let(:attribute_name) { :some_attribute }
     let(:attribute_value) { :some_attribute_value }
 
-    let(:instance) { accessible_klass.new(attribute_name => attribute_value) }
+    let(:instance) { accessible_klass.new }
 
     before { accessible_klass.attribute(attribute_name) }
 
@@ -35,6 +35,8 @@ RSpec.describe Intention::Attribution do
       end
 
       it 'retrieves value' do
+        instance.public_send("#{attribute_name}=", attribute_value)
+
         expect(instance.public_send(attribute_name)).to be attribute_value
       end
     end
