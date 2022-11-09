@@ -3,7 +3,7 @@
 RSpec.describe Intention::Attribution do
   let(:klass) do
     Class.new do
-      include Intention
+      include Intention::Attribution
     end
   end
 
