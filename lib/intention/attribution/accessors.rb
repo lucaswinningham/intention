@@ -28,7 +28,7 @@ module Intention
             instance_variable_get(:"@#{name}")
           end
 
-          klass.send(:private, method_name) unless readable
+          klass.__send__(:private, method_name) unless readable
         end
 
         def define_setter(options)
@@ -42,14 +42,14 @@ module Intention
             instance_variable_set(:"@#{name}", loads.call(value))
           end
 
-          klass.send(:private, method_name) unless writable
+          klass.__send__(:private, method_name) unless writable
         end
 
         def undefine_getter(options)
           klass = options.fetch(:class)
           name = options.fetch(:name)
 
-          klass.send(:undef_method, name)
+          klass.__send__(:undef_method, name)
         rescue NameError
           nil
         end
@@ -58,7 +58,7 @@ module Intention
           klass = options.fetch(:class)
           name = "#{options.fetch(:name)}="
 
-          klass.send(:undef_method, name)
+          klass.__send__(:undef_method, name)
         rescue NameError
           nil
         end

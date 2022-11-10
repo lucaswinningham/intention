@@ -55,10 +55,22 @@ module Intention
         end
       end
 
+      attr_reader :default_value
+
+      def default?
+        defined? @default_value
+      end
+
       def required(required_error_class = RequiredAttributeError)
         tap do
           @required_error = required_error_class
         end
+      end
+
+      attr_reader :required_error
+
+      def required?
+        defined? @required_error
       end
 
       # def renamed(new_name)

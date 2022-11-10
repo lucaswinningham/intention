@@ -17,7 +17,7 @@ RSpec.describe Intention do
     end
 
     it 'includes Initialization' do
-      expect(klass.singleton_class.include?(Intention::Initialization)).to be true
+      expect(klass).to include_mixin Intention::Initialization
     end
 
     it 'includes Attribution' do

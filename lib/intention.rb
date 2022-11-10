@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative 'intention/configuration'
 require_relative 'intention/version'
 require_relative 'intention/refinements'
 
@@ -8,6 +9,7 @@ module Intention # rubocop:disable Style/Documentation
     def included(base)
       base.include Initialization
       base.include Attribution
+      # base.include Mutation
     end
 
     def configure(&block)
@@ -20,6 +22,5 @@ module Intention # rubocop:disable Style/Documentation
   end
 end
 
-require_relative 'intention/configuration'
 require_relative 'intention/attribution'
 require_relative 'intention/initialization'

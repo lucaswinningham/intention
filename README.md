@@ -156,6 +156,8 @@ TODO: Fill out below and OH! type checking stuff like `boolean` and whatnot!
 
 <!-- `nullable` ??? since it's different from required / optional in that a value could be given but nil -->
 
+<!-- `coerce` if nil for required / optional or not given for optional, coerce the value before `loads` -->
+
 `hidden` private, not serialized, good for injected dependencies
 
 `renamed` rename incoming key
@@ -183,6 +185,8 @@ Values are memoized, can configure with `unmemoize` ?...
 `writable` defaults to `true`
 
 `readable` defaults to `true`
+
+<!-- `changes` / `mutation(s)` defaults to `false` mounts mutation tracking through `changes` ? -->
 
 ### Customization
 

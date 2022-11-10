@@ -8,7 +8,7 @@ module Intention
       def included(base)
         base.extend ClassMethods
 
-        base.send :mount_attributes_on_instance
+        base.__send__ :mount_intention_attributes_hash_on_instance
       end
     end
 
@@ -16,17 +16,20 @@ module Intention
       private
 
       def attribute(name)
-        attributes[name.to_sym]
+        intention_attributes_hash[name.to_sym]
       end
 
-      def attributes
-        @attributes ||= Hash.new { |h, name| h[name] = Attribute.new(class: self, name: name) }
+      def intention_attributes_hash
+        @intention_attributes_hash ||= Hash.new do |hash, name|
+          hash[name] = Attribute.new(class: self, name: name)
+        end
       end
 
-      def mount_attributes_on_instance
-        local_attributes = attributes
-        define_method(:attributes) { local_attributes }
-        private :attributes
+      def mount_intention_attributes_hash_on_instance
+        local_intention_attributes_hash = intention_attributes_hash
+
+        define_method(:intention_attributes_hash) { local_intention_attributes_hash }
+        private :intention_attributes_hash
       end
     end
   end

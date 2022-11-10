@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'initialization/attribute_initialization'
+
 module Intention
   module Initialization # rubocop:disable Style/Documentation
     class << self
@@ -8,30 +10,25 @@ module Intention
       end
     end
 
-    module InstanceMethods # rubocop:disable Style/Documentation
+    module InstanceMethods
       def initialize(input_hash = {})
-        instance_variable_set(:"@#{Intention.config.instance_input_hash_name}", input_hash)
+        instance_variable_set(:@intention_input_hash, input_hash)
 
         initialize_intention
       end
 
-      private
-
-      attr_reader :"#{Intention.config.instance_input_hash_name}"
+      attr_reader :intention_input_hash
 
       def initialize_intention(input_hash = nil)
-        input_hash ||= instance_variable_get(:"@#{Intention.config.instance_input_hash_name}")
-
-        attributes.each do |name, attribute|
-          value = input_hash.fetch(attribute.name) { input_hash.fetch(attribute.name.to_s, nil) }
-
-          if value.nil?
-            raise(attribute.required_error, nil.inspect) if attribute.required?
-
-            value = attribute.default_value
-          end
-
-          send("#{name}=", value)
+        input_hash ||= instance_variable_get(:@intention_input_hash)
+        attributes_hash = __send__ :intention_attributes_hash
+    
+        attributes_hash.values.each do |attribute|
+          AttributeInitialization.new(
+            instance: self,
+            attribute: attribute,
+            input_hash: input_hash
+          ).call
         end
       end
     end
