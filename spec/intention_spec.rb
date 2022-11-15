@@ -30,10 +30,10 @@ RSpec.describe Intention do
       getter: { level: :private },
       setter: { defined: false }
     ) do
-      subject { klass.new(input_hash) }
+      subject(:instance) { klass.new(input_hash) }
 
       it 'is set to the input hash' do
-        expect(subject.__send__(:intention_input_hash)).to be input_hash
+        expect(instance.__send__(:intention_input_hash)).to be input_hash
       end
     end
 
@@ -64,18 +64,18 @@ RSpec.describe Intention do
       describe '::new effects' do
         context "when given an input value for :#{random_name}" do
           value = RandomAlphabeticalString.generate
-          subject { klass.new random_name => value }
+          subject(:instance) { klass.new random_name => value }
 
           it "saves input value as instance variable :@#{random_name}" do
-            expect(subject.instance_variable_get(:"@#{random_name}")).to be value
+            expect(instance.instance_variable_get(:"@#{random_name}")).to be value
           end
         end
 
         context "when not given an input value for :#{random_name}" do
-          subject { klass.new }
+          subject(:instance) { klass.new }
 
           it 'does not save input value' do
-            expect(subject.instance_variable_get(:"@#{random_name}")).to be nil
+            expect(instance.instance_variable_get(:"@#{random_name}")).to be_nil
           end
         end
       end
@@ -87,7 +87,6 @@ RSpec.describe Intention do
     class RequiredError < StandardError; end
 
     context "when called with :#{random_name} and #{RequiredError}" do
-
       klass = Class.new do
         include Intention
         required random_name, RequiredError
@@ -100,18 +99,18 @@ RSpec.describe Intention do
       describe '::new effects' do
         context "when given an input value for :#{random_name}" do
           value = RandomAlphabeticalString.generate
-          subject { klass.new random_name => value }
+          subject(:instance) { klass.new random_name => value }
 
           it "saves input value as instance variable :@#{random_name}" do
-            expect(subject.instance_variable_get(:"@#{random_name}")).to be value
+            expect(instance.instance_variable_get(:"@#{random_name}")).to be value
           end
         end
 
         context "when not given an input value for :#{random_name}" do
-          subject { klass.new }
+          subject(:instance) { klass.new }
 
           it "raises #{RequiredError}" do
-            expect { subject }.to raise_error(RequiredError)
+            expect { instance }.to raise_error(RequiredError)
           end
         end
       end

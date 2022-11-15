@@ -27,11 +27,12 @@ RSpec.shared_examples 'accessors' do |options = {}|
 
     getter_level = getter.fetch(:level, :public)
 
-    if getter_level == :public
+    case getter_level
+    when :public
       it "getter for ##{name} is public" do
         expect(subject).to respond_to name
       end
-    elsif getter_level == :private
+    when :private
       it "getter for ##{name} is private" do
         expect(subject).not_to respond_to name
       end
@@ -42,20 +43,21 @@ RSpec.shared_examples 'accessors' do |options = {}|
     it "defines a setter for ##{name}" do
       expect(subject).to have_method "#{name}="
     end
-  
+
     it "setter for ##{name} sets value" do
       subject.__send__("#{name}=", :setter_value)
-  
+
       expect(subject.instance_variable_get(:"@#{name}")).to be :setter_value
     end
 
     setter_level = setter.fetch(:level, :public)
 
-    if setter_level == :public
+    case setter_level
+    when :public
       it "setter for ##{name} is public" do
         expect(subject).to respond_to "#{name}="
       end
-    elsif setter_level == :private
+    when :private
       it "setter for ##{name} is private" do
         expect(subject).not_to respond_to "#{name}="
       end
