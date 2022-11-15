@@ -4,6 +4,9 @@ require_relative 'attribution/attribute'
 
 module Intention
   module Attribution # rubocop:disable Style/Documentation
+    class Error < StandardError; end
+    class RequiredAttributeError < Error; end
+
     class << self
       def included(base)
         base.extend ClassMethods
@@ -17,6 +20,10 @@ module Intention
 
       def attribute(name)
         intention_attributes_hash[name.to_sym]
+      end
+
+      def required(name, required_error_class = RequiredAttributeError)
+        attribute(name).required(required_error_class)
       end
 
       def intention_attributes_hash

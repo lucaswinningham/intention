@@ -17,6 +17,8 @@ module Intention
         initialize_intention
       end
 
+      private
+
       attr_reader :intention_input_hash
 
       def initialize_intention(input_hash = nil)

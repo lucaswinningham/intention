@@ -19,9 +19,9 @@ RSpec.describe Intention::Initialization do
 
     before { klass.__send__(:attribute, attribute_name) }
 
-    describe('#input_hash') do
+    describe '#input_hash' do
       it 'is private' do
-        expect { instance.input_hash }.to raise_error(NoMethodError)
+        expect(instance).not_to respond_to :input_hash
       end
 
       it 'is set to the input hash' do

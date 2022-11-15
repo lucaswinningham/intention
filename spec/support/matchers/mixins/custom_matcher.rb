@@ -78,6 +78,10 @@ module Support
                 default_failure_proc.call
               end
 
+              def description
+                "target: #{@target.inspect}, expected: #{@expected.inspect}"
+              end
+
               private
 
               def default_failure_proc

@@ -148,11 +148,11 @@ TODO: Fill out below and OH! type checking stuff like `boolean` and whatnot!
 
 #### Attribute macros
 
-`attribute` base
+`attribute` base, optionally given
 
-`required` not nil AND given, error class
+`required` must be given, error class
 
-`optional` nil OR not given, default proc
+`default` proc run when not given (conflicts(sp?) with `required`)
 
 <!-- `nullable` ??? since it's different from required / optional in that a value could be given but nil -->
 
