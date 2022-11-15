@@ -49,33 +49,34 @@ RSpec.describe Intention do
   end
 
   describe '::attribute' do
-    random_name = RandomAlphabeticalString.generate
+    attribute_name = RandomAlphabeticalString.generate
 
-    context "when called with :#{random_name}" do
+    context "when called with :#{attribute_name}" do
       klass = Class.new do
         include Intention
-        attribute random_name
+        attribute attribute_name
       end
 
-      include_examples 'accessors', name: random_name do
+      include_examples 'accessors', name: attribute_name do
         subject { klass.new }
       end
 
-      describe '::new effects' do
-        context "when given an input value for :#{random_name}" do
-          value = RandomAlphabeticalString.generate
-          subject(:instance) { klass.new random_name => value }
+      describe 'instance' do
+        [nil, false, 'some_string', :some_symbol, 1, [], {}].each do |value|
+          context "when given #{value.inspect} for :#{attribute_name}" do
+            subject(:instance) { klass.new attribute_name => value }
 
-          it "saves input value as instance variable :@#{random_name}" do
-            expect(instance.instance_variable_get(:"@#{random_name}")).to be value
+            it "saves #{value.inspect} to :@#{attribute_name}" do
+              expect(instance.instance_variable_get(:"@#{attribute_name}")).to be value
+            end
           end
         end
 
-        context "when not given an input value for :#{random_name}" do
+        context "when not given an input value for :#{attribute_name}" do
           subject(:instance) { klass.new }
 
-          it 'does not save input value' do
-            expect(instance.instance_variable_get(:"@#{random_name}")).to be_nil
+          it "saves nil to :@#{attribute_name}" do
+            expect(instance.instance_variable_get(:"@#{attribute_name}")).to be_nil
           end
         end
       end
@@ -83,34 +84,36 @@ RSpec.describe Intention do
   end
 
   describe '::required' do
-    random_name = RandomAlphabeticalString.generate
-    class RequiredError < StandardError; end
+    attribute_name = RandomAlphabeticalString.generate
 
-    context "when called with :#{random_name} and #{RequiredError}" do
+    context "when called with :#{attribute_name} and an error class" do
+      required_error_class = Class.new(StandardError)
+
       klass = Class.new do
         include Intention
-        required random_name, RequiredError
+        required attribute_name, required_error_class
       end
 
-      include_examples 'accessors', name: random_name do
-        subject { klass.new random_name => RandomAlphabeticalString.generate }
+      include_examples 'accessors', name: attribute_name do
+        subject { klass.new attribute_name => nil }
       end
 
-      describe '::new effects' do
-        context "when given an input value for :#{random_name}" do
-          value = RandomAlphabeticalString.generate
-          subject(:instance) { klass.new random_name => value }
+      describe 'instance' do
+        [nil, false, 'some_string', :some_symbol, 1, [], {}].each do |value|
+          context "when given #{value.inspect} for :#{attribute_name}" do
+            subject(:instance) { klass.new attribute_name => value }
 
-          it "saves input value as instance variable :@#{random_name}" do
-            expect(instance.instance_variable_get(:"@#{random_name}")).to be value
+            it "saves #{value.inspect} to :@#{attribute_name}" do
+              expect(instance.instance_variable_get(:"@#{attribute_name}")).to be value
+            end
           end
         end
 
-        context "when not given an input value for :#{random_name}" do
+        context "when not given a value for :#{attribute_name}" do
           subject(:instance) { klass.new }
 
-          it "raises #{RequiredError}" do
-            expect { instance }.to raise_error(RequiredError)
+          it 'raises error class' do
+            expect { instance }.to raise_error(required_error_class)
           end
         end
       end

@@ -10,7 +10,7 @@ module Intention
       end
     end
 
-    module InstanceMethods
+    module InstanceMethods # rubocop:disable Style/Documentation
       def initialize(input_hash = {})
         instance_variable_set(:@intention_input_hash, input_hash)
 
@@ -22,14 +22,16 @@ module Intention
       attr_reader :intention_input_hash
 
       def initialize_intention(input_hash = nil)
-        input_hash ||= instance_variable_get(:@intention_input_hash)
+        input_hash ||= instance_variable_get :@intention_input_hash
+
+        symbolized_input_hash = input_hash.transform_keys(&:to_sym)
         attributes_hash = __send__ :intention_attributes_hash
-    
-        attributes_hash.values.each do |attribute|
+
+        attributes_hash.each_value do |attribute|
           AttributeInitialization.new(
             instance: self,
             attribute: attribute,
-            input_hash: input_hash
+            input_hash: symbolized_input_hash
           ).call
         end
       end

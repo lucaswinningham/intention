@@ -19,11 +19,9 @@ module Intention
 
       def value
         @value ||= input_hash.fetch(attribute.name) do
-          input_hash.fetch(attribute.name.to_s) do
-            raise attribute.required_error if attribute.required?
+          raise attribute.required_error if attribute.required?
 
-            attribute.default_value if attribute.default?
-          end
+          attribute.default_value if attribute.default?
         end
       end
     end

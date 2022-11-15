@@ -152,7 +152,7 @@ TODO: Fill out below and OH! type checking stuff like `boolean` and whatnot!
 
 `required` must be given, error class
 
-`default` proc run when not given (conflicts(sp?) with `required`)
+`default` proc ran when not given (conflicts(sp?) with `required`)
 
 <!-- `nullable` ??? since it's different from required / optional in that a value could be given but nil -->
 
@@ -185,6 +185,8 @@ Values are memoized, can configure with `unmemoize` ?...
 `writable` defaults to `true`
 
 `readable` defaults to `true`
+
+`changes` dirty changes
 
 <!-- `changes` / `mutation(s)` defaults to `false` mounts mutation tracking through `changes` ? -->
 

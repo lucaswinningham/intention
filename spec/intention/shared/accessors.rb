@@ -2,14 +2,19 @@
 
 require 'support/matchers/have_method'
 
-RSpec.shared_examples 'accessors' do |options = {}|
-  class NameRequiredError < StandardError; end
+module Intention
+  module Shared
+    module Accessors
+      class Error < StandardError; end
+      class NameRequiredError < Error; end
+    end
+  end
+end
 
+RSpec.shared_examples 'accessors' do |options = {}|
   include Support::Matchers::HaveMethod
 
-  # let(:instance) { klass.new name => attribute_value }
-
-  name = options.fetch(:name) { raise NameRequiredError }
+  name = options.fetch(:name) { raise Intention::Shared::Accessors::NameRequiredError }
 
   getter = options.fetch(:getter, {})
   setter = options.fetch(:setter, {})

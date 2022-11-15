@@ -22,8 +22,10 @@ module Intention
         intention_attributes_hash[name.to_sym]
       end
 
-      def required(name, required_error_class = RequiredAttributeError)
-        attribute(name).required(required_error_class)
+      Attribute.registry.each do |entry|
+        define_method entry do |name, *args, **kwargs, &block|
+          attribute(name).public_send(entry, *args, **kwargs, &block)
+        end
       end
 
       def intention_attributes_hash
