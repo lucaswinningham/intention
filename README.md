@@ -148,11 +148,11 @@ TODO: Fill out below and OH! type checking stuff like `boolean` and whatnot!
 
 #### Attribute macros
 
-`attribute` base, optionally given
+`attribute` base, optional, readable, writable, loads / dumps identity, uses name (not renamed)
 
-`required` must be given, error class
+`required` must be given, error class, takes precedence over `default`
 
-`default` proc ran when not given (conflicts(sp?) with `required`)
+`default` proc ran when not given (conflicts(sp?) with `required`), can use previously processed attributes in proc for determining default value as it is passed the instance
 
 <!-- `nullable` ??? since it's different from required / optional in that a value could be given but nil -->
 

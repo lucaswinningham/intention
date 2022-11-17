@@ -11,3 +11,9 @@ Layout/LineLength:
 
 NestedGroups:
   Max: 5
+
+RSpec/DescribeClass:
+  IgnoredMetadata:
+    type:
+      - feature
+      - version

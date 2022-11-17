@@ -4,6 +4,10 @@ require_relative 'intention/configuration'
 require_relative 'intention/version'
 require_relative 'intention/refinements'
 
+require_relative 'intention/error'
+require_relative 'intention/attribution'
+require_relative 'intention/initialization'
+
 module Intention # rubocop:disable Style/Documentation
   class << self
     def included(base)
@@ -21,6 +25,3 @@ module Intention # rubocop:disable Style/Documentation
     end
   end
 end
-
-require_relative 'intention/attribution'
-require_relative 'intention/initialization'

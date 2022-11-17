@@ -4,30 +4,30 @@ require 'securerandom'
 
 require_relative 'accessors'
 
-require_relative 'attribute/registry'
+require_relative 'attribute/authorized_access_registry'
 
 module Intention
+  class RequiredAttributeError < Error; end
+
   module Attribution
     class Attribute # rubocop:disable Style/Documentation
-      class Error < StandardError; end
       class ClassRequiredError < Error; end
       class NameRequiredError < Error; end
       class UnparsableNameError < Error; end
-      class RequiredAttributeError < Error; end
 
       class << self
         def registry
-          @registry ||= Registry.new registry_key
+          @registry ||= AuthorizedAccessRegistry.new(key)
         end
 
         private
 
-        def registry_key
-          @registry_key ||= SecureRandom.uuid
+        def key
+          @key ||= SecureRandom.uuid
         end
       end
 
-      attr_reader :name
+      attr_reader :name, :required_error, :default_callable
 
       def initialize(options = {})
         @klass = options.fetch(:class) { raise ClassRequiredError }
@@ -35,84 +35,66 @@ module Intention
 
         @is_readable = options.fetch(:readable, true)
         @is_writable = options.fetch(:writable, true)
-        @loads_proc = options.fetch(:loads, proc(&:itself))
-        @dumps_proc = options.fetch(:dumps, proc(&:itself))
+        @loads_callable = options.fetch(:loads, proc(&:itself))
+        @dumps_callable = options.fetch(:dumps, proc(&:itself))
 
         reflux
       end
 
-      registry.add :required, authorization_key: registry_key do
-        def required(required_error_class = RequiredAttributeError)
-          tap do
-            @required_error = required_error_class
-          end
-        end
-
-        attr_reader :required_error
-
-        def required?
-          defined? @required_error
+      def required(klass = RequiredAttributeError)
+        tap do
+          @required_error = klass
         end
       end
 
-      # def required(required_error_class = RequiredAttributeError)
-      #   tap do
-      #     @required_error = required_error_class
-      #   end
-      # end
+      registry.add :required, key: key
 
-      # registry.add :required, authorization_key: registry_key
+      def required?
+        defined? @required_error
+      end
 
-      # attr_reader :required_error
-
-      # def required?
-      #   defined? @required_error
-      # end
-
-      registry.add :readable, authorization_key: registry_key do
-        def readable(is_readable = true) # rubocop:disable Style/OptionalBooleanParameter
-          tap do
-            reflux { @is_readable = !!is_readable }
-          end
+      def readable(is_readable = true) # rubocop:disable Style/OptionalBooleanParameter
+        tap do
+          reflux { @is_readable = !!is_readable }
         end
       end
 
-      registry.add :writable, authorization_key: registry_key do
-        def writable(is_writable = true) # rubocop:disable Style/OptionalBooleanParameter
-          tap do
-            reflux { @is_writable = !!is_writable }
-          end
+      registry.add :readable, key: key
+
+      def writable(is_writable = true) # rubocop:disable Style/OptionalBooleanParameter
+        tap do
+          reflux { @is_writable = !!is_writable }
         end
       end
 
-      registry.add :loads, authorization_key: registry_key do
-        def loads(&block)
-          tap do
-            reflux { @loads_proc = block } if block
-          end
+      registry.add :writable, key: key
+
+      def loads(&block)
+        tap do
+          reflux { @loads_callable = block } if block
         end
       end
 
-      registry.add :dumps, authorization_key: registry_key do
-        def dumps(&block)
-          tap do
-            reflux { @dumps_proc = block } if block
-          end
+      registry.add :loads, key: key
+
+      def dumps(&block)
+        tap do
+          reflux { @dumps_callable = block } if block
         end
       end
 
-      registry.add :default, authorization_key: registry_key do
-        def default(default_value = nil)
-          tap do
-            @default_value = default_value
-          end
-        end
+      registry.add :dumps, key: key
 
-        attr_reader :default_value
-
-        def default?
-          defined? @default_value
+      def default(&block)
+        tap do
+          @default_callable = block if block
         end
+      end
+
+      registry.add :default, key: key
+
+      def default?
+        defined? @default_callable
       end
 
       # def renamed(new_name)
@@ -141,8 +123,8 @@ module Intention
           name: name,
           readable: @is_readable,
           writable: @is_writable,
-          loads: @loads_proc,
-          dumps: @dumps_proc
+          loads: @loads_callable,
+          dumps: @dumps_callable
         )
       end
     end

@@ -4,9 +4,6 @@ require_relative 'attribution/attribute'
 
 module Intention
   module Attribution # rubocop:disable Style/Documentation
-    class Error < StandardError; end
-    class RequiredAttributeError < Error; end
-
     class << self
       def included(base)
         base.extend ClassMethods
@@ -22,9 +19,9 @@ module Intention
         intention_attributes_hash[name.to_sym]
       end
 
-      Attribute.registry.each do |entry|
-        define_method entry do |name, *args, **kwargs, &block|
-          attribute(name).public_send(entry, *args, **kwargs, &block)
+      Attribute.registry.each do |entry_name|
+        define_method entry_name do |attribute_name, *args, **kwargs, &block|
+          attribute(attribute_name).public_send(entry_name, *args, **kwargs, &block)
         end
       end
 

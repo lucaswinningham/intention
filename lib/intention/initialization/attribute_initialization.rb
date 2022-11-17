@@ -21,7 +21,7 @@ module Intention
         @value ||= input_hash.fetch(attribute.name) do
           raise attribute.required_error if attribute.required?
 
-          attribute.default_value if attribute.default?
+          attribute.default_callable.call(instance) if attribute.default?
         end
       end
     end
