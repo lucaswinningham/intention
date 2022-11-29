@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 require 'support/shared'
-require 'support/shared/examples/accessor'
 
 module Intention
-  RSpec.describe '::default', type: :class_method do
+  RSpec.describe '::loads chained with ::loads', type: :chain do
     attribute_name = Support::Shared.random_attribute_name
     let(:callable) { proc {} }
 
@@ -14,15 +13,7 @@ module Intention
       Class.new do
         include Intention
 
-        default(attribute_name, &local_callable)
-      end
-    end
-
-    describe 'instance attribute accessor' do
-      include_examples 'accessor' do
-        subject { klass.new }
-
-        let(:accessor_name) { attribute_name }
+        loads(attribute_name).loads(&local_callable)
       end
     end
 
@@ -32,7 +23,22 @@ module Intention
       let(:value) { Support::Shared.empty_natives.sample }
 
       it('is does not raise error') { expect { instance }.not_to raise_error }
-      it('saves value') { expect(instance.__send__(attribute_name)).to be value }
+
+      it 'calls callable with value and the instance' do
+        allow(callable).to receive(:call)
+
+        instance
+
+        expect(callable).to have_received(:call).with(value, instance)
+      end
+
+      it 'saves callable result' do
+        value = Support::Shared.empty_natives.sample
+
+        allow(callable).to receive(:call) { value }
+
+        expect(instance.__send__(attribute_name)).to be value
+      end
     end
 
     context 'when #initialize is not given a value' do
@@ -40,12 +46,12 @@ module Intention
 
       it('is does not raise error') { expect { instance }.not_to raise_error }
 
-      it 'calls callable with value' do
+      it 'calls callable with nil and the instance' do
         allow(callable).to receive(:call)
 
         instance
 
-        expect(callable).to have_received(:call).with instance
+        expect(callable).to have_received(:call).with(nil, instance)
       end
 
       it 'saves callable result' do
@@ -63,7 +69,7 @@ module Intention
           Class.new do
             include Intention
 
-            default(attribute_name)
+            loads(attribute_name).loads
           end
         end
 

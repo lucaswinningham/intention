@@ -48,13 +48,19 @@ module Support
             end
           end
 
+          def description(&block)
+            matcher_class.define_method :description do
+              block.call(expected, target)
+            end
+          end
+
+          private
+
           def matcher_class
             @matcher_class ||= generate_default_matcher_class.tap do |klass|
               const_set(matcher_name.pascal_case, klass)
             end
           end
-
-          private
 
           def generate_default_matcher_class # rubocop:disable Metrics/MethodLength
             Class.new do

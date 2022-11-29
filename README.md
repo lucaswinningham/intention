@@ -152,7 +152,13 @@ TODO: Fill out below and OH! type checking stuff like `boolean` and whatnot!
 
 `required` must be given, error class, takes precedence over `default`
 
-`default` proc ran when not given (conflicts(sp?) with `required`), can use previously processed attributes in proc for determining default value as it is passed the instance
+`default` proc ran when not given (conflicts(sp?) with `required`), can use previously processed intance attributes in proc for determining default value as it is passed the instance
+
+`renamed` rename incoming key
+
+`loads` run incoming value serialization
+
+`dumps` run outgoing value serialization for `to_h` (if applicable)
 
 <!-- `nullable` ??? since it's different from required / optional in that a value could be given but nil -->
 
@@ -160,17 +166,11 @@ TODO: Fill out below and OH! type checking stuff like `boolean` and whatnot!
 
 `hidden` private, not serialized, good for injected dependencies
 
-`renamed` rename incoming key
-
 `expected`? expect the key but do nothing with / ignore it
 
 `internal` does not get serialized in `to_h`
 
-`loads` run incoming value serialization
-
-`dumps` run outgoing value serialization
-
-`field` is developed from existing
+`field` is developed from existing, always run after non fields?
 
 If any two are conflicting, takes the last. Examples / list ...
 

@@ -1,25 +1,16 @@
 # frozen_string_literal: true
 
 require 'support/shared'
-require 'support/shared/examples/accessor'
 
 module Intention
-  RSpec.describe '::required', type: :class_method do
+  RSpec.describe '::required chained with ::required', type: :chain do
     attribute_name = Support::Shared.random_attribute_name
 
     let(:klass) do
       Class.new do
         include Intention
 
-        required attribute_name
-      end
-    end
-
-    describe 'instance attribute accessor' do
-      include_examples 'accessor' do
-        subject { klass.new attribute_name => nil }
-
-        let(:accessor_name) { attribute_name }
+        required(attribute_name).required
       end
     end
 

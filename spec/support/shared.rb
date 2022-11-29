@@ -13,7 +13,7 @@ module Support
         random_string(options).then { |name| [true, false].sample ? name : name.to_sym }
       end
 
-      def natives
+      def empty_natives
         [nil, [true, false].sample, '', :'', [], {}]
       end
     end

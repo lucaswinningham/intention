@@ -35,14 +35,15 @@ module Intention
 
         @is_readable = options.fetch(:readable, true)
         @is_writable = options.fetch(:writable, true)
-        @loads_callable = options.fetch(:loads, proc(&:itself))
-        @dumps_callable = options.fetch(:dumps, proc(&:itself))
+        @loads_callable = options.fetch(:loads, proc { |value| value })
+        @dumps_callable = options.fetch(:dumps, proc { |value| value })
 
         reflux
       end
 
       def required(klass = RequiredAttributeError)
         tap do
+          @default_callable = nil
           @required_error = klass
         end
       end
@@ -50,7 +51,20 @@ module Intention
       registry.add :required, key: key
 
       def required?
-        defined? @required_error
+        !!@required_error
+      end
+
+      def default(&block)
+        tap do
+          @required_error = nil
+          @default_callable = block if block
+        end
+      end
+
+      registry.add :default, key: key
+
+      def default?
+        !!@default_callable
       end
 
       def readable(is_readable = true) # rubocop:disable Style/OptionalBooleanParameter
@@ -85,18 +99,6 @@ module Intention
 
       registry.add :dumps, key: key
 
-      def default(&block)
-        tap do
-          @default_callable = block if block
-        end
-      end
-
-      registry.add :default, key: key
-
-      def default?
-        defined? @default_callable
-      end
-
       # def renamed(new_name)
       #   tap do
       #     undefine_accessors
@@ -123,8 +125,9 @@ module Intention
           name: name,
           readable: @is_readable,
           writable: @is_writable,
-          loads: @loads_callable,
-          dumps: @dumps_callable
+          loads: @loads_callable
+          # loads: @loads_callable,
+          # dumps: @dumps_callable
         )
       end
     end

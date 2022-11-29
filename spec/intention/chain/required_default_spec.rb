@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 require 'support/shared'
-require 'support/shared/examples/accessor'
 
 module Intention
-  RSpec.describe '::default', type: :class_method do
+  RSpec.describe '::required chained with ::default', type: :chain do
     attribute_name = Support::Shared.random_attribute_name
     let(:callable) { proc {} }
 
@@ -14,15 +13,7 @@ module Intention
       Class.new do
         include Intention
 
-        default(attribute_name, &local_callable)
-      end
-    end
-
-    describe 'instance attribute accessor' do
-      include_examples 'accessor' do
-        subject { klass.new }
-
-        let(:accessor_name) { attribute_name }
+        required(attribute_name).default(&local_callable)
       end
     end
 
@@ -63,7 +54,7 @@ module Intention
           Class.new do
             include Intention
 
-            default(attribute_name)
+            required(attribute_name).default
           end
         end
 

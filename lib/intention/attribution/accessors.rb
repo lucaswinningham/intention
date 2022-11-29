@@ -39,7 +39,7 @@ module Intention
           writable = options.fetch(:writable)
 
           klass.define_method method_name do |value|
-            instance_variable_set(:"@#{name}", loads.call(value))
+            instance_variable_set(:"@#{name}", loads.call(value, self))
           end
 
           klass.__send__(:private, method_name) unless writable
