@@ -21,7 +21,7 @@ RSpec.describe '::null', type: :class_method do
 
   describe '#initialize' do
     before do
-      allow(callable).to receive(:call) { :callable_result }
+      allow(callable).to receive(:call).and_return(:callable_result)
 
       klass.__send__(:null, :null_init_atr, &callable)
     end

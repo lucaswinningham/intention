@@ -15,8 +15,8 @@ module Intention
 
       subject(:instance) { klass.new }
 
-      it('is defined') { expect(subject).to have_method :intention_input_hash }
-      it('is private') { expect(subject).not_to respond_to :intention_input_hash }
+      it('is defined') { expect(instance).to have_method :intention_input_hash }
+      it('is private') { expect(instance).not_to respond_to :intention_input_hash }
     end
 
     describe 'setter' do

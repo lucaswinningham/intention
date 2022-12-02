@@ -17,8 +17,8 @@ RSpec.describe '::null chained with ::loads', type: :chain do
 
   describe '#initialize' do
     before do
-      allow(null_callable).to receive(:call) { :null_callable_result }
-      allow(loads_callable).to receive(:call) { :loads_callable_result }
+      allow(null_callable).to receive(:call).and_return(:null_callable_result)
+      allow(loads_callable).to receive(:call).and_return(:loads_callable_result)
     end
 
     context 'when given nil for the attribute' do

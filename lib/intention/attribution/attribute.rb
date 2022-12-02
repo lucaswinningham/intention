@@ -27,7 +27,8 @@ module Intention
         end
       end
 
-      attr_reader :name, :required_error, :required_callable, :default_callable, :null_callable, :rename_from
+      attr_reader :name, :required_error, :required_callable, :default_callable, :null_callable,
+                  :rename_from
 
       def initialize(options = {})
         @klass = options.fetch(:class) { raise ClassRequiredError }
@@ -82,8 +83,8 @@ module Intention
 
       def coerce(&block)
         tap do
-          default &block
-          null &block
+          default(&block)
+          null(&block)
         end
       end
 
@@ -117,21 +118,21 @@ module Intention
 
       registry.add :dumps, key: key
 
-      # def readable(is_readable = true) # rubocop:disable Style/OptionalBooleanParameter
-      #   tap do
-      #     reflux { @is_readable = !!is_readable }
-      #   end
-      # end
+      def readable(is_readable = true) # rubocop:disable Style/OptionalBooleanParameter
+        tap do
+          reflux { @is_readable = !!is_readable }
+        end
+      end
 
-      # registry.add :readable, key: key
+      registry.add :readable, key: key
 
-      # def writable(is_writable = true) # rubocop:disable Style/OptionalBooleanParameter
-      #   tap do
-      #     reflux { @is_writable = !!is_writable }
-      #   end
-      # end
+      def writable(is_writable = true) # rubocop:disable Style/OptionalBooleanParameter
+        tap do
+          reflux { @is_writable = !!is_writable }
+        end
+      end
 
-      # registry.add :writable, key: key
+      registry.add :writable, key: key
 
       private
 

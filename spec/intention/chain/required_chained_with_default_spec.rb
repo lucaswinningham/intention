@@ -15,9 +15,9 @@ RSpec.describe '::required chained with ::default', type: :chain do
 
   describe '#initialize' do
     context 'when not given a value for the attribute' do
-      before { allow(callable).to receive(:call) { :callable_result } }
-
       subject(:instance) { klass.new }
+
+      before { allow(callable).to receive(:call).and_return(:callable_result) }
 
       it 'calls the callable with the instance' do
         instance

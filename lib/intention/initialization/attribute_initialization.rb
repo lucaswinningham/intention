@@ -18,13 +18,11 @@ module Intention
       private
 
       def value
-        @value ||= begin
-          if input_hash.key? attribute_name
-            parse_given_value input_hash.fetch(attribute_name)
-          else
-            determine_missing_value
-          end
-        end
+        @value ||= if input_hash.key? attribute_name
+                     parse_given_value input_hash.fetch(attribute_name)
+                   else
+                     determine_missing_value
+                   end
       end
 
       def attribute_name

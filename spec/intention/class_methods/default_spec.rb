@@ -21,7 +21,7 @@ RSpec.describe '::default', type: :class_method do
 
   describe '#initialize' do
     before do
-      allow(callable).to receive(:call) { :callable_result }
+      allow(callable).to receive(:call).and_return(:callable_result)
 
       klass.__send__(:default, :default_init_atr, &callable)
     end

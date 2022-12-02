@@ -20,17 +20,17 @@ RSpec.describe '::loads', type: :class_method do
   end
 
   describe 'instance accessor' do
+    subject(:instance) { klass.new }
+
     before { klass.__send__(:loads, :loads_accessor_atr, &callable) }
 
     let(:callable) { proc {} }
 
-    subject(:instance) { klass.new }
-
     context 'when the setter method is called' do
       before do
-        allow(callable).to receive(:call) { :setter_result }
+        allow(callable).to receive(:call).and_return(:setter_result)
 
-        subject.loads_accessor_atr = :loads_acs_val
+        instance.loads_accessor_atr = :loads_acs_val
       end
 
       it 'calls the callable with the value and the instance' do
@@ -45,7 +45,7 @@ RSpec.describe '::loads', type: :class_method do
 
   describe '#initialize' do
     before do
-      allow(callable).to receive(:call) { :callable_result }
+      allow(callable).to receive(:call).and_return(:callable_result)
 
       klass.__send__(:loads, :loads_init_atr, &callable)
     end

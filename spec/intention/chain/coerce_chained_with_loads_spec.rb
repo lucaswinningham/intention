@@ -17,8 +17,8 @@ RSpec.describe '::coerce chained with ::loads', type: :chain do
 
   describe '#initialize' do
     before do
-      allow(coerce_callable).to receive(:call) { :coerce_callable_result }
-      allow(loads_callable).to receive(:call) { :loads_callable_result }
+      allow(coerce_callable).to receive(:call).and_return(:coerce_callable_result)
+      allow(loads_callable).to receive(:call).and_return(:loads_callable_result)
     end
 
     context 'when given nil for the attribute' do
@@ -42,12 +42,12 @@ RSpec.describe '::coerce chained with ::loads', type: :chain do
     end
 
     context 'when not given a value for the attribute' do
-      before do
-        allow(coerce_callable).to receive(:call) { :coerce_callable_result }
-        allow(loads_callable).to receive(:call) { :loads_callable_result }
-      end
-
       subject(:instance) { klass.new }
+
+      before do
+        allow(coerce_callable).to receive(:call).and_return(:coerce_callable_result)
+        allow(loads_callable).to receive(:call).and_return(:loads_callable_result)
+      end
 
       it 'calls the coerce callable with the instance' do
         instance

@@ -11,20 +11,20 @@ RSpec.describe '::attribute', type: :class_method do
   it('is private') { expect(klass).not_to respond_to :attribute }
 
   describe 'instance accessor' do
-    before { klass.__send__(:attribute, :atr) }
-
     subject(:instance) { klass.new }
 
-    it('has a getter method') { expect(subject).to have_method :atr }
-    it('the getter method is public') { expect(subject).to respond_to :atr }
+    before { klass.__send__(:attribute, :atr) }
 
-    it('has a setter method') { expect(subject).to have_method :atr= }
-    it('the setter method is public') { expect(subject).to respond_to :atr= }
+    it('has a getter method') { expect(instance).to have_method :atr }
+    it('the getter method is public') { expect(instance).to respond_to :atr }
+
+    it('has a setter method') { expect(instance).to have_method :atr= }
+    it('the setter method is public') { expect(instance).to respond_to :atr= }
 
     context 'when the setter method is called' do
-      let(:call) { subject.atr = :val }
+      let(:call) { instance.atr = :val }
 
-      it('changes the value') { expect { call }.to change { subject.atr }.to(:val) }
+      it('changes the value') { expect { call }.to change(instance, :atr).to(:val) }
     end
   end
 

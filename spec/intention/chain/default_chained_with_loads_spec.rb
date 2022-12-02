@@ -17,12 +17,12 @@ RSpec.describe '::default chained with ::loads', type: :chain do
 
   describe '#initialize' do
     context 'when not given a value for the attribute' do
-      before do
-        allow(default_callable).to receive(:call) { :default_callable_result }
-        allow(loads_callable).to receive(:call) { :loads_callable_result }
-      end
-
       subject(:instance) { klass.new }
+
+      before do
+        allow(default_callable).to receive(:call).and_return(:default_callable_result)
+        allow(loads_callable).to receive(:call).and_return(:loads_callable_result)
+      end
 
       it 'calls the default callable with the instance' do
         instance

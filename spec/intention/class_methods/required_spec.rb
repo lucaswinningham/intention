@@ -68,7 +68,7 @@ RSpec.describe '::required', type: :class_method do
         end
 
         context 'when callable evaluates to truthy' do
-          before { allow(callable).to receive(:call) { :yes } }
+          before { allow(callable).to receive(:call).and_return(:yes) }
 
           it 'raises an error' do
             expect { instance }.to raise_error(Intention::RequiredAttributeError)
