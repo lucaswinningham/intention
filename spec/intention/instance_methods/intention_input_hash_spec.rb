@@ -38,7 +38,7 @@ module Intention
         }
       end
 
-      it 'saves entries to #intention_input_hash' do
+      it 'saves the entries to #intention_input_hash' do
         expect(instance.__send__(:intention_input_hash)).to be input_hash
       end
     end

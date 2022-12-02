@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'support/matchers/have_method'
-# require 'support/shared/examples/accessor'
 
 RSpec.describe '::attribute', type: :class_method do
   include Support::Matchers::HaveMethod
@@ -16,13 +15,16 @@ RSpec.describe '::attribute', type: :class_method do
 
     subject(:instance) { klass.new }
 
-    it('has getter method') { expect(subject).to have_method :atr }
-    it('getter method is public') { expect(subject).to respond_to :atr }
+    it('has a getter method') { expect(subject).to have_method :atr }
+    it('the getter method is public') { expect(subject).to respond_to :atr }
 
-    it('has setter method') { expect(subject).to have_method :atr= }
-    it('setter method is public') { expect(subject).to respond_to :atr= }
-    it 'setter method changes the underlying value' do
-      expect { subject.atr = :val }.to change { subject.atr }.to(:val)
+    it('has a setter method') { expect(subject).to have_method :atr= }
+    it('the setter method is public') { expect(subject).to respond_to :atr= }
+
+    context 'when the setter method is called' do
+      let(:call) { subject.atr = :val }
+
+      it('changes the value') { expect { call }.to change { subject.atr }.to(:val) }
     end
   end
 
@@ -32,14 +34,14 @@ RSpec.describe '::attribute', type: :class_method do
     context 'when given a value for the attribute' do
       subject(:instance) { klass.new init_atr: :init_val }
 
-      it('does not raise error') { expect { instance }.not_to raise_error }
-      it('saves value') { expect(instance.init_atr).to be :init_val }
+      it('does not raise an error') { expect { instance }.not_to raise_error }
+      it('saves the value') { expect(instance.init_atr).to be :init_val }
     end
 
     context 'when not given a value for the attribute' do
       subject(:instance) { klass.new }
 
-      it('does not raise error') { expect { instance }.not_to raise_error }
+      it('does not raise an error') { expect { instance }.not_to raise_error }
       it('saves nil') { expect(instance.init_atr).to be_nil }
     end
   end

@@ -150,11 +150,15 @@ TODO: Fill out below and OH! type checking stuff like `boolean` and whatnot!
 
 `attribute` base, optional, readable, writable, loads / dumps identity, uses name (not renamed)
 
-`required` must be given, error class, takes precedence over `default`
+`required` must be given, error class, takes precedence over `default`, can take a proc that when ran and evaluates to true, throws error
 
 `default` proc ran when not given (conflicts(sp?) with `required`), can use previously processed intance attributes in proc for determining default value as it is passed the instance
 
-`renamed` rename incoming key
+`null` proc ran when given nil, different from `default` in that `default` is ran when a value is not given, `null` runs when nil is explicitly given
+
+`coerce` proc that's given to both `default` and `null`
+
+`rename` rename incoming key
 
 `loads` run incoming value serialization
 
@@ -164,15 +168,15 @@ TODO: Fill out below and OH! type checking stuff like `boolean` and whatnot!
 
 <!-- `coerce` if nil for required / optional or not given for optional, coerce the value before `loads` -->
 
-`hidden` private, not serialized, good for injected dependencies
+`hidden` private, `internal`, good for injected dependencies
 
 `expected`? expect the key but do nothing with / ignore it
 
 `internal` does not get serialized in `to_h`
 
-`field` is developed from existing, always run after non fields?
+`field` proc ran to calculate from existing, always run after non fields?, serialized?
 
-If any two are conflicting, takes the last. Examples / list ...
+If any two are conflicting, takes the last. Examples / list ... like `default.required`
 
 Values are memoized, can configure with `unmemoize` ?...
 

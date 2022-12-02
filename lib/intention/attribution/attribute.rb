@@ -27,7 +27,7 @@ module Intention
         end
       end
 
-      attr_reader :name, :required_error, :default_callable
+      attr_reader :name, :required_error, :required_callable, :default_callable, :null_callable, :rename_from
 
       def initialize(options = {})
         @klass = options.fetch(:class) { raise ClassRequiredError }
@@ -41,22 +41,23 @@ module Intention
         reflux
       end
 
-      def required(klass = RequiredAttributeError)
+      def required(klass = RequiredAttributeError, &block)
         tap do
-          @default_callable = nil
+          reset_default
           @required_error = klass
+          @required_callable = block || proc { true }
         end
       end
 
       registry.add :required, key: key
 
       def required?
-        !!@required_error
+        !!required_error
       end
 
       def default(&block)
         tap do
-          @required_error = nil
+          reset_required
           @default_callable = block if block
         end
       end
@@ -64,24 +65,41 @@ module Intention
       registry.add :default, key: key
 
       def default?
-        !!@default_callable
+        !!default_callable
       end
 
-      def readable(is_readable = true) # rubocop:disable Style/OptionalBooleanParameter
+      def null(&block)
         tap do
-          reflux { @is_readable = !!is_readable }
+          @null_callable = block if block
         end
       end
 
-      registry.add :readable, key: key
+      registry.add :null, key: key
 
-      def writable(is_writable = true) # rubocop:disable Style/OptionalBooleanParameter
+      def null?
+        !!null_callable
+      end
+
+      def coerce(&block)
         tap do
-          reflux { @is_writable = !!is_writable }
+          default &block
+          null &block
         end
       end
 
-      registry.add :writable, key: key
+      registry.add :coerce, key: key
+
+      def rename(from_key)
+        tap do
+          @rename_from = from_key
+        end
+      end
+
+      registry.add :rename, key: key
+
+      def renamed?
+        !!rename_from
+      end
 
       def loads(&block)
         tap do
@@ -99,13 +117,21 @@ module Intention
 
       registry.add :dumps, key: key
 
-      # def renamed(new_name)
+      # def readable(is_readable = true) # rubocop:disable Style/OptionalBooleanParameter
       #   tap do
-      #     undefine_accessors
-      #     @name = sanitize_name new_name
-      #     define_accessors
+      #     reflux { @is_readable = !!is_readable }
       #   end
       # end
+
+      # registry.add :readable, key: key
+
+      # def writable(is_writable = true) # rubocop:disable Style/OptionalBooleanParameter
+      #   tap do
+      #     reflux { @is_writable = !!is_writable }
+      #   end
+      # end
+
+      # registry.add :writable, key: key
 
       private
 
@@ -129,6 +155,14 @@ module Intention
           # loads: @loads_callable,
           # dumps: @dumps_callable
         )
+      end
+
+      def reset_required
+        @required_error = nil
+      end
+
+      def reset_default
+        @default_callable = nil
       end
     end
   end
