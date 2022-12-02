@@ -1,89 +1,82 @@
 # frozen_string_literal: true
 
-require 'support/shared'
-require 'support/shared/examples/accessor'
+require 'support/matchers/have_method'
+require 'support/shared/open'
 
-module Intention
-  RSpec.describe '::loads', type: :class_method do
-    attribute_name = Support::Shared.random_attribute_name
+RSpec.describe '::loads', type: :class_method do
+  include Support::Matchers::HaveMethod
+
+  let(:klass) { Class.new { include Intention } }
+
+  it('is defined') { expect(klass).to have_method :loads }
+  it('is private') { expect(klass).not_to respond_to :loads }
+
+  it('calls ::attribute with the attribute name') do
+    allow(klass).to receive(:attribute) { Support::Shared::Open.new }
+
+    klass.__send__(:loads, :loads_atr)
+
+    expect(klass).to have_received(:attribute).with(:loads_atr)
+  end
+
+  describe 'instance accessor' do
+    before { klass.__send__(:loads, :loads_acs_atr, &callable) }
+
     let(:callable) { proc {} }
 
-    let(:klass) do
-      local_callable = callable
+    subject(:instance) { klass.new }
 
-      Class.new do
-        include Intention
+    context 'when setter method is called' do
+      before do
+        allow(callable).to receive(:call) { :setter_result }
 
-        loads(attribute_name, &local_callable)
+        subject.loads_acs_atr = :loads_acs_val
+      end
+
+      it 'calls the callable with the value and the instance' do
+        expect(callable).to have_received(:call).with(:loads_acs_val, instance)
+      end
+
+      it 'saves the callable result' do
+        expect(instance.loads_acs_atr).to be :setter_result
       end
     end
+  end
 
-    describe 'instance attribute accessor' do
-      include_examples 'accessor' do
-        subject { klass.new }
+  describe '#initialize' do
+    before { klass.__send__(:loads, :loads_init_atr, &callable) }
 
-        let(:accessor_name) { attribute_name }
-      end
-    end
+    let(:callable) { proc {} }
 
-    context 'when #initialize is given a value' do
-      subject(:instance) { klass.new attribute_name => value }
+    context 'when given a value for the attribute' do
+      before { allow(callable).to receive(:call) { :processed_result } }
 
-      let(:value) { Support::Shared.empty_natives.sample }
+      subject(:instance) { klass.new loads_init_atr: :loads_init_val }
 
-      it('is does not raise error') { expect { instance }.not_to raise_error }
-
-      it 'calls callable with value and the instance' do
-        allow(callable).to receive(:call)
-
+      it 'calls the callable with the value and the instance' do
         instance
 
-        expect(callable).to have_received(:call).with(value, instance)
+        expect(callable).to have_received(:call).with(:loads_init_val, instance)
       end
 
-      it 'saves callable result' do
-        value = Support::Shared.empty_natives.sample
-
-        allow(callable).to receive(:call) { value }
-
-        expect(instance.__send__(attribute_name)).to be value
+      it 'saves the callable result' do
+        expect(instance.loads_init_atr).to be :processed_result
       end
     end
 
-    context 'when #initialize is not given a value' do
+    context 'when not given a value for the attribute' do
+      before { allow(callable).to receive(:call) { :callable_result } }
+
       subject(:instance) { klass.new }
 
-      it('is does not raise error') { expect { instance }.not_to raise_error }
-
-      it 'calls callable with nil and the instance' do
-        allow(callable).to receive(:call)
-
+      it 'calls the callable with nil and the instance' do
         instance
 
         expect(callable).to have_received(:call).with(nil, instance)
       end
 
-      it 'saves callable result' do
-        value = Support::Shared.empty_natives.sample
-
-        allow(callable).to receive(:call) { value }
-
-        expect(instance.__send__(attribute_name)).to be value
-      end
-
-      context 'when not given a callable' do
-        subject(:instance) { klass.new }
-
-        let(:klass) do
-          Class.new do
-            include Intention
-
-            loads(attribute_name)
-          end
-        end
-
-        it('is does not raise error') { expect { instance }.not_to raise_error }
-        it('defaults to nil') { expect(instance.__send__(attribute_name)).to be_nil }
+      it 'saves the callable result' do
+        expect(instance.loads_init_atr).to be :callable_result
       end
     end
   end

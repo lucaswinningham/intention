@@ -1,19 +1,29 @@
 # frozen_string_literal: true
 
 require 'support/shared'
+require 'support/shared/examples/accessor'
 
 module Intention
   RSpec.describe '::required chained with ::default', type: :chain do
-    attribute_name = Support::Shared.random_attribute_name
-    let(:callable) { proc {} }
+    let(:attribute_name) { Support::Shared.random_attribute_name }
+    let(:default_callable) { proc {} }
 
     let(:klass) do
-      local_callable = callable
+      local_attribute_name = attribute_name
+      local_default_callable = default_callable
 
       Class.new do
         include Intention
 
-        required(attribute_name).default(&local_callable)
+        required(local_attribute_name).default(&local_default_callable)
+      end
+    end
+
+    describe 'instance attribute accessor' do
+      include_examples 'accessor' do
+        subject { klass.new }
+
+        let(:accessor_name) { attribute_name }
       end
     end
 
@@ -24,6 +34,14 @@ module Intention
 
       it('is does not raise error') { expect { instance }.not_to raise_error }
       it('saves value') { expect(instance.__send__(attribute_name)).to be value }
+
+      it 'does not call default callable' do
+        allow(default_callable).to receive(:call)
+
+        instance
+
+        expect(default_callable).not_to have_received(:call)
+      end
     end
 
     context 'when #initialize is not given a value' do
@@ -31,30 +49,32 @@ module Intention
 
       it('is does not raise error') { expect { instance }.not_to raise_error }
 
-      it 'calls callable with value' do
-        allow(callable).to receive(:call)
+      it 'calls default callable with value' do
+        allow(default_callable).to receive(:call)
 
         instance
 
-        expect(callable).to have_received(:call).with instance
+        expect(default_callable).to have_received(:call).with instance
       end
 
-      it 'saves callable result' do
-        value = Support::Shared.empty_natives.sample
+      it 'saves default callable result' do
+        value = Support::Shared.random_string
 
-        allow(callable).to receive(:call) { value }
+        allow(default_callable).to receive(:call) { value }
 
         expect(instance.__send__(attribute_name)).to be value
       end
 
-      context 'when not given a callable' do
+      context 'when not given a default callable' do
         subject(:instance) { klass.new }
 
         let(:klass) do
+          local_attribute_name = attribute_name
+
           Class.new do
             include Intention
 
-            required(attribute_name).default
+            required(local_attribute_name).default
           end
         end
 

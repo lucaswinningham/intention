@@ -1,19 +1,29 @@
 # frozen_string_literal: true
 
 require 'support/shared'
+require 'support/shared/examples/accessor'
 
 module Intention
   RSpec.describe '::attribute chained with ::loads', type: :chain do
-    attribute_name = Support::Shared.random_attribute_name
+    let(:attribute_name) { Support::Shared.random_attribute_name }
     let(:callable) { proc {} }
 
     let(:klass) do
+      local_attribute_name = attribute_name
       local_callable = callable
 
       Class.new do
         include Intention
 
-        attribute(attribute_name).loads(&local_callable)
+        attribute(local_attribute_name).loads(&local_callable)
+      end
+    end
+
+    describe 'instance attribute accessor' do
+      include_examples 'accessor' do
+        subject { klass.new }
+
+        let(:accessor_name) { attribute_name }
       end
     end
 
@@ -66,10 +76,12 @@ module Intention
         subject(:instance) { klass.new }
 
         let(:klass) do
+          local_attribute_name = attribute_name
+
           Class.new do
             include Intention
 
-            attribute(attribute_name).loads
+            attribute(local_attribute_name).loads
           end
         end
 

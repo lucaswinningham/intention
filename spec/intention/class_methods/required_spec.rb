@@ -1,56 +1,47 @@
 # frozen_string_literal: true
 
-require 'support/shared'
-require 'support/shared/examples/accessor'
+require 'support/matchers/have_method'
+require 'support/shared/open'
 
-module Intention
-  RSpec.describe '::required', type: :class_method do
-    attribute_name = Support::Shared.random_attribute_name
+RSpec.describe '::required', type: :class_method do
+  include Support::Matchers::HaveMethod
 
-    let(:klass) do
-      Class.new do
-        include Intention
+  let(:klass) { Class.new { include Intention } }
 
-        required attribute_name
+  it('is defined') { expect(klass).to have_method :required }
+  it('is private') { expect(klass).not_to respond_to :required }
+
+  it('calls ::attribute with the attribute name') do
+    allow(klass).to receive(:attribute) { Support::Shared::Open.new }
+
+    klass.__send__(:required, :req_atr)
+
+    expect(klass).to have_received(:attribute).with(:req_atr)
+  end
+
+  context 'when called without a custom error class' do
+    before { klass.__send__(:required, :req_init_atr_no_custom) }
+
+    describe '#initialize' do
+      context 'when not given a value for the attribute' do
+        subject(:instance) { klass.new }
+
+        it('raises error') { expect { instance }.to raise_error(Intention::RequiredAttributeError) }
       end
     end
+  end
 
-    describe 'instance attribute accessor' do
-      include_examples 'accessor' do
-        subject { klass.new attribute_name => nil }
-
-        let(:accessor_name) { attribute_name }
-      end
+  context 'when called with a custom error class' do
+    before do
+      stub_const('CustomErrorClass', Class.new(StandardError))
+      klass.__send__(:required, :req_init_atr_custom, CustomErrorClass)
     end
 
-    context 'when #initialize is given a value' do
-      subject(:instance) { klass.new attribute_name => value }
+    describe '#initialize' do
+      context 'when not given a value for the attribute' do
+        subject(:instance) { klass.new }
 
-      let(:value) { Support::Shared.empty_natives.sample }
-
-      it('does not raise error') { expect { instance }.not_to raise_error }
-      it('saves value') { expect(instance.__send__(attribute_name)).to be value }
-    end
-
-    context 'when #initialize is not given a value' do
-      subject(:instance) { klass.new }
-
-      it('raises error') { expect { instance }.to raise_error(Intention::RequiredAttributeError) }
-
-      context 'when given a custom error class' do
-        before do
-          stub_const('RequiredError', Class.new(StandardError))
-        end
-
-        let(:klass) do
-          Class.new do
-            include Intention
-
-            required(attribute_name, RequiredError)
-          end
-        end
-
-        it('raises custom error') { expect { instance }.to raise_error(RequiredError) }
+        it('raises the custom error class') { expect { instance }.to raise_error(CustomErrorClass) }
       end
     end
   end

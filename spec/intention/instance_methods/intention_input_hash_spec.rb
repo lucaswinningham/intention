@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require 'support/shared'
-require 'support/shared/examples/accessor'
+require 'support/matchers/have_method'
 
 module Intention
   RSpec.describe '#intention_input_hash', type: :instance_method do
@@ -11,19 +10,32 @@ module Intention
       end
     end
 
-    describe 'instance #intention_input_hash accessor' do
-      include_examples 'accessor', getter: { level: :private }, setter: { defined: false } do
-        subject { klass.new }
+    describe 'getter' do
+      include Support::Matchers::HaveMethod
 
-        let(:accessor_name) { :intention_input_hash }
-      end
+      subject(:instance) { klass.new }
+
+      it('is defined') { expect(subject).to have_method :intention_input_hash }
+      it('is private') { expect(subject).not_to respond_to :intention_input_hash }
+    end
+
+    describe 'setter' do
+      include Support::Matchers::HaveMethod
+
+      subject(:instance) { klass.new }
+
+      it('is not defined') { expect(instance).not_to have_method :intention_input_hash= }
     end
 
     context 'when #initialize is given entries' do
       subject(:instance) { klass.new input_hash }
 
       let(:input_hash) do
-        { Support::Shared.random_attribute_name => Support::Shared.random_string }
+        {
+          this_attribute: :this_value,
+          that_attribute: :that_value,
+          the_other_attribute: :the_other_value
+        }
       end
 
       it 'saves entries to #intention_input_hash' do
@@ -31,14 +43,6 @@ module Intention
       end
     end
 
-    # it 'method name is configurable' do
-    #   name_before = Intention.config.instance_input_hash_name
-    #   custom_input_hash_method_name = :custom_input_hash_method_name
-    #   Intention.config.instance_input_hash_name = custom_input_hash_method_name
-
-    #   expect(instance.__send__(custom_input_hash_method_name)).to be input_hash
-
-    #   Intention.config.instance_input_hash_name = name_before
-    # end
+    it 'method name is configurable'
   end
 end

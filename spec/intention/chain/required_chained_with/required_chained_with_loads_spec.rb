@@ -1,19 +1,29 @@
 # frozen_string_literal: true
 
 require 'support/shared'
+require 'support/shared/examples/accessor'
 
 module Intention
   RSpec.describe '::required chained with ::loads', type: :chain do
-    attribute_name = Support::Shared.random_attribute_name
-    let(:callable) { proc {} }
+    let(:attribute_name) { Support::Shared.random_attribute_name }
+    let(:loads_callable) { proc {} }
 
     let(:klass) do
-      local_callable = callable
+      local_attribute_name = attribute_name
+      local_loads_callable = loads_callable
 
       Class.new do
         include Intention
 
-        required(attribute_name).loads(&local_callable)
+        required(local_attribute_name).loads(&local_loads_callable)
+      end
+    end
+
+    describe 'instance attribute accessor' do
+      include_examples 'accessor' do
+        subject { klass.new attribute_name => nil }
+
+        let(:accessor_name) { attribute_name }
       end
     end
 
@@ -24,18 +34,18 @@ module Intention
 
       it('is does not raise error') { expect { instance }.not_to raise_error }
 
-      it 'calls callable with value and the instance' do
-        allow(callable).to receive(:call)
+      it 'calls loads callable with value and the instance' do
+        allow(loads_callable).to receive(:call)
 
         instance
 
-        expect(callable).to have_received(:call).with(value, instance)
+        expect(loads_callable).to have_received(:call).with(value, instance)
       end
 
-      it 'saves callable result' do
+      it 'saves loads callable result' do
         value = Support::Shared.empty_natives.sample
 
-        allow(callable).to receive(:call) { value }
+        allow(loads_callable).to receive(:call) { value }
 
         expect(instance.__send__(attribute_name)).to be value
       end
@@ -46,14 +56,16 @@ module Intention
 
       it('raises error') { expect { instance }.to raise_error(Intention::RequiredAttributeError) }
 
-      context 'when not given a callable' do
+      context 'when not given a loads callable' do
         subject(:instance) { klass.new }
 
         let(:klass) do
+          local_attribute_name = attribute_name
+
           Class.new do
             include Intention
 
-            required(attribute_name).loads
+            required(local_attribute_name).loads
           end
         end
 
