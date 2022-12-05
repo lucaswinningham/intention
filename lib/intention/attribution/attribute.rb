@@ -155,6 +155,12 @@ module Intention
 
       registry.add :hidden, key: key
 
+      def field(&block)
+        default(&block).hidden
+      end
+
+      registry.add :field, key: key
+
       private
 
       def sanitize_name(name)

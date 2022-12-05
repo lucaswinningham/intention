@@ -171,11 +171,11 @@ TODO: Fill out below and OH! type checking stuff like `boolean` and whatnot!
 
 `writable` sets publicity of setter
 
-`hidden` `readable` false, `writable` false, `withheld` true, good for injected dependencies
+`hidden` `readable` false, `writable` false, `withheld` true
 
 `expected`? expect the key but do nothing with / ignore it, for bypassing `strict`
 
-`field` proc ran to calculate from existing, always run after non fields?, serialized?
+`field` proc that's given to `default`, `hidden`, good for injected dependencies / calculated attributes -- as in attributes that will never be given values in the input hash. Note: If a value _is_ given in the input hash, that value will be assigned as the value for the attribute (for testing).
 
 `dumps` run outgoing value serialization for `to_h` (if applicable)
 
