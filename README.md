@@ -39,7 +39,7 @@ class Klass
 
   attr_reader :required_attribute
   attr_reader :renamed_attribute
-  attr_reader :internal_attribute
+  attr_reader :withheld_attribute
   attr_reader :dumped_attribute
 
   def initialize(options = {})
@@ -47,7 +47,7 @@ class Klass
 
     @required_attribute = options.fetch(:required_attribute) { raise RequiredAttributeError }
     @renamed_attribute = options[:not_renamed_attribute]
-    @internal_attribute = options[:internal_attribute]
+    @withheld_attribute = options[:withheld_attribute]
     @dumped_attribute = options[:dumped_attribute]
   end
 
@@ -113,8 +113,8 @@ class Klass
   required(:required_attribute, RequiredAttributeError)
   optional(:optional_attribute) { :default }
   renamed(:not_renamed_attribute, :renamed_attribute)
-  internal(:internal_attribute)
-  loads(:loaded_attribute, unless: proc { |x| x.nil? }) { |x| x.to_s.downcase.to_sym }
+  withheld(:withheld_attribute)
+  loads(:loaded_attribute, unless: proc(&:nil?)) { |x| x.to_s.downcase.to_sym }
   dumps(:dumped_attribute, &:hash)
   field(:calculated_attribute) { "#{required_attribute}: #{optional_attribute}" }
   hidden(:injected_dependency) { Klass::Dependency.new }
@@ -133,10 +133,13 @@ require 'intention'
 class Klass
   include Intention.new(serializable: true)
 
-  required(:flag).renamed(:secret_sym_flag).loads(&:to_sym).hidden
-  internal(:items).optional.dumps(unless: proc { |x| x.nil? }) do |items|
+  required(:flag).renamed(:secret_sym_flag).hidden
+
+  coerce(:items) { [] }.loads(unless: proc(&:nil?)) { |items|
     items.map { |item| Item.new item }
-  end
+  }.dumps(unless: proc(&:nil?)) { |items|
+    items.map(&:to_h)
+  }
 end
 ```
 
@@ -154,27 +157,27 @@ TODO: Fill out below and OH! type checking stuff like `boolean` and whatnot!
 
 `default` proc ran when not given (conflicts(sp?) with `required`), can use previously processed intance attributes in proc for determining default value as it is passed the instance
 
-`null` proc ran when given nil, different from `default` in that `default` is ran when a value is not given, `null` runs when nil is explicitly given
+`null` proc ran when given nil, different from `default` in that `default` is ran when a value is not given, `null` runs when nil is what is given
 
 `coerce` proc that's given to both `default` and `null`
 
-`rename` rename incoming key
+`renamed` rename incoming key
 
 `loads` run incoming value serialization
 
-`dumps` run outgoing value serialization for `to_h` (if applicable)
+`withheld` does not get serialized in `to_h`
 
-<!-- `nullable` ??? since it's different from required / optional in that a value could be given but nil -->
+`readable` sets publicity of getter
 
-<!-- `coerce` if nil for required / optional or not given for optional, coerce the value before `loads` -->
+`writable` sets publicity of setter
 
-`hidden` private, `internal`, good for injected dependencies
+`hidden` `readable` false, `writable` false, `withheld` true, good for injected dependencies
 
-`expected`? expect the key but do nothing with / ignore it
-
-`internal` does not get serialized in `to_h`
+`expected`? expect the key but do nothing with / ignore it, for bypassing `strict`
 
 `field` proc ran to calculate from existing, always run after non fields?, serialized?
+
+`dumps` run outgoing value serialization for `to_h` (if applicable)
 
 If any two are conflicting, takes the last. Examples / list ... like `default.required`
 
@@ -186,9 +189,9 @@ Values are memoized, can configure with `unmemoize` ?...
 
 `strict` throws (custom) error when extra keys given, defaults to `false`
 
-`writable` defaults to `true`
+<!-- `writable` defaults to `true` -->
 
-`readable` defaults to `true`
+<!-- `readable` defaults to `true` -->
 
 `changes` dirty changes
 
@@ -223,19 +226,14 @@ require 'intention'
 class Klass
   include Intention
 
-  integer(:age)
-  field(:medicare?) { age >= 65 }
-
   def adult?
-    options_hash[:age] >= 18
+    intention_input_hash[:age] >= 18
   end
 end
 
 instance = Klass.new age: 30
 instance.adult?
 # => true
-instance.medicare?
-# => false
 ```
 
 We can use mixins:
@@ -287,6 +285,13 @@ class Serializable < Intention::Base
 end
 
 class StrictStruct < Serializable
+  strict
+end
+
+# or
+
+class StrictStruct < Intention::Base
+  serializable
   strict
 end
 

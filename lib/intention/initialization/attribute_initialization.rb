@@ -26,7 +26,7 @@ module Intention
       end
 
       def attribute_name
-        @attribute_name ||= attribute.renamed? ? attribute.rename_from : attribute.name
+        @attribute_name ||= attribute.renamed? ? attribute.renamed_from : attribute.name
       end
 
       def parse_given_value(given_value)

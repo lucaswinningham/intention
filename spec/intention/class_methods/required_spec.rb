@@ -50,7 +50,7 @@ RSpec.describe '::required', type: :class_method do
 
   context 'when called with a callable' do
     before do
-      klass.__send__(:required, :required_init_atr_custom_error_class, &callable)
+      klass.__send__(:required, :required_init_atr_callable, &callable)
     end
 
     let(:callable) { proc {} }

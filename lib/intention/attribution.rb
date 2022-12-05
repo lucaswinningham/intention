@@ -5,10 +5,19 @@ require_relative 'attribution/attribute'
 module Intention
   module Attribution # rubocop:disable Style/Documentation
     class << self
+      private
+
       def included(base)
         base.extend ClassMethods
 
-        base.__send__ :mount_intention_attributes_hash_on_instance
+        mount_attributes base
+      end
+
+      def mount_attributes(base)
+        local_attributes = base.__send__ :attributes
+
+        base.define_method(:attributes) { local_attributes }
+        base.__send__(:private, :attributes)
       end
     end
 
@@ -16,7 +25,7 @@ module Intention
       private
 
       def attribute(name)
-        intention_attributes_hash[name.to_sym]
+        attributes[name.to_sym]
       end
 
       Attribute.registry.each do |entry_name|
@@ -25,17 +34,10 @@ module Intention
         end
       end
 
-      def intention_attributes_hash
-        @intention_attributes_hash ||= Hash.new do |hash, name|
+      def attributes
+        @attributes ||= Hash.new do |hash, name|
           hash[name] = Attribute.new(class: self, name: name)
         end
-      end
-
-      def mount_intention_attributes_hash_on_instance
-        local_intention_attributes_hash = intention_attributes_hash
-
-        define_method(:intention_attributes_hash) { local_intention_attributes_hash }
-        private :intention_attributes_hash
       end
     end
   end

@@ -45,4 +45,15 @@ RSpec.describe '::attribute', type: :class_method do
       it('saves nil') { expect(instance.init_atr).to be_nil }
     end
   end
+
+  describe '#to_h' do
+    subject(:hash) { klass.new(to_h_atr: :to_h_val).to_h }
+
+    before do
+      klass.__send__(:serializable)
+      klass.__send__(:attribute, :to_h_atr)
+    end
+
+    it('serializes the attribute') { expect(hash.to_h[:to_h_atr]).to be :to_h_val }
+  end
 end

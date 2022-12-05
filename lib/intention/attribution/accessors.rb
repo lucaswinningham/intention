@@ -20,11 +20,9 @@ module Intention
           klass = options.fetch(:class)
           name = options.fetch(:name)
           method_name = name
-          # dumps = options.fetch(:dumps)
           readable = options.fetch(:readable)
 
           klass.define_method method_name do
-            # dumps.call instance_variable_get(:"@#{name}")
             instance_variable_get(:"@#{name}")
           end
 

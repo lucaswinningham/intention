@@ -28,16 +28,14 @@ module Intention
       end
 
       attr_reader :name, :required_error, :required_callable, :default_callable, :null_callable,
-                  :rename_from
+                  :renamed_from, :is_withheld
 
       def initialize(options = {})
         @klass = options.fetch(:class) { raise ClassRequiredError }
         @name = sanitize_name options.fetch(:name) { raise NameRequiredError }
 
-        @is_readable = options.fetch(:readable, true)
-        @is_writable = options.fetch(:writable, true)
-        @loads_callable = options.fetch(:loads, proc { |value| value })
-        @dumps_callable = options.fetch(:dumps, proc { |value| value })
+        @is_readable = true
+        @is_writable = true
 
         reflux
       end
@@ -82,24 +80,21 @@ module Intention
       end
 
       def coerce(&block)
-        tap do
-          default(&block)
-          null(&block)
-        end
+        default(&block).null(&block)
       end
 
       registry.add :coerce, key: key
 
-      def rename(from_key)
+      def renamed(from_key)
         tap do
-          @rename_from = from_key
+          @renamed_from = from_key
         end
       end
 
-      registry.add :rename, key: key
+      registry.add :renamed, key: key
 
       def renamed?
-        !!rename_from
+        !!renamed_from
       end
 
       def loads(&block)
@@ -110,13 +105,21 @@ module Intention
 
       registry.add :loads, key: key
 
+      def loads_callable
+        @loads_callable ||= proc { |value| value }
+      end
+
       def dumps(&block)
         tap do
-          reflux { @dumps_callable = block } if block
+          @dumps_callable = block if block
         end
       end
 
       registry.add :dumps, key: key
+
+      def dumps_callable
+        @dumps_callable ||= proc { |value| value }
+      end
 
       def readable(is_readable = true) # rubocop:disable Style/OptionalBooleanParameter
         tap do
@@ -133,6 +136,24 @@ module Intention
       end
 
       registry.add :writable, key: key
+
+      def withheld(is_withheld = true) # rubocop:disable Style/OptionalBooleanParameter
+        tap do
+          @is_withheld = !!is_withheld
+        end
+      end
+
+      registry.add :withheld, key: key
+
+      def withheld?
+        !!is_withheld
+      end
+
+      def hidden(is_hidden = true) # rubocop:disable Style/OptionalBooleanParameter
+        withheld(!!is_hidden).readable(!is_hidden).writable(!is_hidden)
+      end
+
+      registry.add :hidden, key: key
 
       private
 
@@ -152,14 +173,13 @@ module Intention
           name: name,
           readable: @is_readable,
           writable: @is_writable,
-          loads: @loads_callable
-          # loads: @loads_callable,
-          # dumps: @dumps_callable
+          loads: loads_callable
         )
       end
 
       def reset_required
         @required_error = nil
+        @required_callable = nil
       end
 
       def reset_default

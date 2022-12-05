@@ -8,12 +8,16 @@ module Support
     module Mixins
       module CustomMatcher
         class << self
+          private
+
           def included(base)
             base.extend ClassMethods
           end
         end
 
         module ClassMethods
+          private
+
           attr_reader :matcher_name
 
           def included(base)
@@ -53,8 +57,6 @@ module Support
               block.call(expected, target)
             end
           end
-
-          private
 
           def matcher_class
             @matcher_class ||= generate_default_matcher_class.tap do |klass|
