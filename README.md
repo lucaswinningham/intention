@@ -173,7 +173,7 @@ TODO: Fill out below and OH! type checking stuff like `boolean` and whatnot!
 
 `hidden` `readable` false, `writable` false, `withheld` true
 
-`expected`? expect the key but do nothing with / ignore it, for bypassing `strict`
+`expected`? expect the key but do nothing with / ignore it, for bypassing `strict!`. Does not create getters, setters, serializers.
 
 `field` proc that's given to `default`, `hidden`, good for injected dependencies / calculated attributes -- as in attributes that will never be given values in the input hash. Note: If a value _is_ given in the input hash, that value will be assigned as the value for the attribute (for testing).
 
@@ -187,7 +187,7 @@ Values are memoized, can configure with `unmemoize` ?...
 
 `serializable` attaches `to_h`, defaults to `false`
 
-`strict` throws (custom) error when extra keys given, defaults to `false`
+`strict!` throws an error when extra keys given, defaults to `false`
 
 <!-- `writable` defaults to `true` -->
 

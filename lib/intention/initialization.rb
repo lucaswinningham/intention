@@ -28,10 +28,11 @@ module Intention
 
       def initialize_intention(input_hash = nil)
         input_hash ||= instance_variable_get :@intention_input_hash
-
         symbolized_input_hash = input_hash.transform_keys(&:to_sym)
 
         attributes.each_value do |attribute|
+          next unless attribute.accessible?
+
           AttributeInitialization.new(
             instance: self,
             attribute: attribute,

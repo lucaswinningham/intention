@@ -5,6 +5,8 @@ module Intention
     module Accessors # rubocop:disable Style/Documentation
       class << self
         def define(options)
+          return unless options.fetch(:accessible, true)
+
           define_getter(options)
           define_setter(options)
         end

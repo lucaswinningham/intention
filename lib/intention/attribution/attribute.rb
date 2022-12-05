@@ -34,6 +34,7 @@ module Intention
         @klass = options.fetch(:class) { raise ClassRequiredError }
         @name = sanitize_name options.fetch(:name) { raise NameRequiredError }
 
+        @is_accessible = true
         @is_readable = true
         @is_writable = true
 
@@ -159,6 +160,19 @@ module Intention
 
       registry.add :hidden, key: key
 
+      def expected
+        reflux do
+          withheld
+          @is_accessible = false
+        end
+      end
+
+      registry.add :expected, key: key
+
+      def accessible?
+        @is_accessible
+      end
+
       def field(&block)
         default(&block).hidden
       end
@@ -181,6 +195,7 @@ module Intention
         Accessors.define(
           class: @klass,
           name: name,
+          accessible: @is_accessible,
           readable: @is_readable,
           writable: @is_writable,
           loads: loads_callable

@@ -8,7 +8,7 @@ module Intention
           input_hash = options.fetch(:input_hash).transform_keys(&:to_sym)
           attributes = options.fetch(:attributes)
 
-          unexpected_keys = input_hash.keys - attributes.map(&:hash_accessor)
+          unexpected_keys = input_hash.keys - attributes.values.map(&:hash_accessor)
 
           return unless unexpected_keys.any?
 
