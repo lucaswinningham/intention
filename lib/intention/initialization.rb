@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative 'initialization/verify_input_hash'
 require_relative 'initialization/attribute_initialization'
 
 module Intention
@@ -14,6 +15,8 @@ module Intention
 
     module InstanceMethods # rubocop:disable Style/Documentation
       def initialize(input_hash = {})
+        VerifyInputHash.call(input_hash: input_hash, attributes: attributes) if self.class.strict?
+
         instance_variable_set(:@intention_input_hash, input_hash)
 
         initialize_intention

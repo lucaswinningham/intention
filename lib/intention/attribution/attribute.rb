@@ -40,6 +40,10 @@ module Intention
         reflux
       end
 
+      def hash_accessor
+        renamed? ? renamed_from : name
+      end
+
       def required(klass = RequiredAttributeError, &block)
         tap do
           reset_default
@@ -75,7 +79,7 @@ module Intention
 
       registry.add :null, key: key
 
-      def null?
+      def nullable?
         !!null_callable
       end
 

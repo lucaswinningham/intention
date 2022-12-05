@@ -8,6 +8,7 @@ require_relative 'intention/error'
 require_relative 'intention/initialization'
 require_relative 'intention/attribution'
 require_relative 'intention/serialization'
+require_relative 'intention/strict'
 
 module Intention # rubocop:disable Style/Documentation
   class << self
@@ -25,6 +26,7 @@ module Intention # rubocop:disable Style/Documentation
       base.include Initialization
       base.include Attribution
       base.include Serialization
+      base.include Strict
       # base.include Mutation # "dirty"
     end
   end
