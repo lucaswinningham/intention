@@ -167,13 +167,15 @@ TODO: Fill out below and OH! type checking stuff like `boolean` and whatnot!
 
 `withheld` does not get serialized in `to_h`
 
-`readable` sets publicity of getter
+`accessible` controls whether a getter and setter are defined, defaults to `true`
 
-`writable` sets publicity of setter
+`readable` sets publicity of setter, defaults to `true`
 
-`hidden` `readable` false, `writable` false, `withheld` true
+`writable` sets publicity of getter, defaults to `true`
 
-`expected`? expect the key but do nothing with / ignore it, for bypassing `strict!`. Does not create getters, setters, serializers.
+`hidden` `readable: false`, `writable: false`, `withheld: true`
+
+`expected`? `accessible: false`, `withheld: true`, expect the key but do nothing with / ignore it, for bypassing `strict!`.
 
 `field` proc that's given to `default`, `hidden`, good for injected dependencies / calculated attributes -- as in attributes that will never be given values in the input hash. Note: If a value _is_ given in the input hash, that value will be assigned as the value for the attribute (for testing).
 
@@ -188,10 +190,6 @@ Values are memoized, can configure with `unmemoize` ?...
 `serializable` attaches `to_h`, defaults to `false`
 
 `strict!` throws an error when extra keys given, defaults to `false`
-
-<!-- `writable` defaults to `true` -->
-
-<!-- `readable` defaults to `true` -->
 
 `changes` dirty changes
 

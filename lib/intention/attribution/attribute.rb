@@ -2,8 +2,7 @@
 
 require 'securerandom'
 
-require_relative 'accessors'
-
+require_relative 'attribute/accessors'
 require_relative 'attribute/authorized_access_registry'
 
 module Intention
@@ -84,12 +83,6 @@ module Intention
         !!null_callable
       end
 
-      def coerce(&block)
-        default(&block).null(&block)
-      end
-
-      registry.add :coerce, key: key
-
       def renamed(from_key)
         tap do
           @renamed_from = from_key
@@ -126,6 +119,18 @@ module Intention
         @dumps_callable ||= proc { |value| value }
       end
 
+      def accessible(is_accessible = true) # rubocop:disable Style/OptionalBooleanParameter
+        tap do
+          reflux { @is_accessible = !!is_accessible }
+        end
+      end
+
+      registry.add :accessible, key: key
+
+      def accessible?
+        @is_accessible
+      end
+
       def readable(is_readable = true) # rubocop:disable Style/OptionalBooleanParameter
         tap do
           reflux { @is_readable = !!is_readable }
@@ -154,24 +159,23 @@ module Intention
         !!is_withheld
       end
 
+      def coerce(&block)
+        default(&block).null(&block)
+      end
+
+      registry.add :coerce, key: key
+
       def hidden(is_hidden = true) # rubocop:disable Style/OptionalBooleanParameter
-        withheld(!!is_hidden).readable(!is_hidden).writable(!is_hidden)
+        withheld(is_hidden).readable(!is_hidden).writable(!is_hidden)
       end
 
       registry.add :hidden, key: key
 
       def expected
-        reflux do
-          withheld
-          @is_accessible = false
-        end
+        accessible(false).withheld
       end
 
       registry.add :expected, key: key
-
-      def accessible?
-        @is_accessible
-      end
 
       def field(&block)
         default(&block).hidden
