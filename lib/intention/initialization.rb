@@ -17,28 +17,29 @@ module Intention
       def initialize(input_hash = {})
         VerifyInputHash.call(input_hash: input_hash, attributes: attributes) if self.class.strict?
 
-        instance_variable_set(:@intention_input_hash, input_hash)
+        @intention_input_hash = input_hash
 
-        initialize_intention
+        initialize_intention @intention_input_hash
       end
 
       private
 
       attr_reader :intention_input_hash
 
-      def initialize_intention(input_hash = nil)
-        input_hash ||= instance_variable_get :@intention_input_hash
+      def initialize_intention(input_hash = {})
         symbolized_input_hash = input_hash.transform_keys(&:to_sym)
 
-        attributes.each_value do |attribute|
+        cache = attributes.each_value.with_object({}) do |attribute, hash|
           next unless attribute.accessible?
 
-          AttributeInitialization.new(
+          hash[attribute.name] = AttributeInitialization.new(
             instance: self,
             attribute: attribute,
             input_hash: symbolized_input_hash
           ).call
         end
+
+        @intention_cache = cache if self.class.dirty_enabled?
       end
     end
   end

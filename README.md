@@ -191,7 +191,7 @@ Values are memoized, can configure with `unmemoize` ?...
 
 `strict!` throws an error when extra keys given, defaults to `false`
 
-`changes` dirty changes
+`dirty` track changes that happen to attributes after initialization
 
 <!-- `changes` / `mutation(s)` defaults to `false` mounts mutation tracking through `changes` ? -->
 
