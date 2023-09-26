@@ -40,8 +40,8 @@ module Intention
 
     attr_reader :name
 
-    def initialize(options = {})
-      @name = options.fetch(:name) { raise NameRequiredError }
+    def initialize(name)
+      @name = name.to_sym
 
       self.class.initialization.each do |block|
         block.call(self)
@@ -120,6 +120,16 @@ module Intention
           attribute.set(:required, Required.new)
           attribute.set(:default, Default.new)
         end
+
+        register :required do |error_class = RequiredAttributeError, &block|
+          get(:default).reset
+          get(:required).set(error_class: error_class, callable: block)
+        end
+
+        register :default do |&block|
+          get(:required).reset
+          get(:default).set(callable: block)
+        end
       end
     end
   end
@@ -127,31 +137,62 @@ end
 
 module Intention
   class Instance # TODO: change name here
+    class InstanceIntention
+      def initialize(options = {})
+        @attributes = options.fetch(:attributes)
+      end
+
+      def each_attribute(&block)
+        attributes.call.each_value(&block)
+      end
+
+      private
+
+      attr_reader :attributes
+    end
+
     class << self
       private
 
       def included(base)
-        base.include(InstanceMethods)
         base.extend(ClassMethods)
+
+        base.define_method(:intention) do
+          InstanceIntention.new(attributes: proc { base.__send__(:attributes) })
+        end
+
+        base.__send__(:private, :intention)
+
+        base.include(InstanceMethods)
       end
     end
 
     module InstanceMethods
       def initialize(hash = {})
-        initialize_intention(hash)
+        @intention_input = hash.transform_keys(&:to_sym)
+
+        intention.each_attribute do |attribute|
+          block.call(input: intention_input, attribute: attribute)
+        end
       end
 
       private
 
-      def initialize_intention(hash = {})
-        self.class.initialization.each do |block|
-          block.call(hash, self)
-        end
-      end
+      attr_reader :intention_input
     end
 
     module ClassMethods
+      def attribute(name)
+        attributes[name.to_sym]
+      end
+
       private
+
+      def attributes
+        @attributes ||= Hash.new do |hash, name|
+          hash[name] = Intention::Attribute.new(name)
+        end
+      end
     end
 
     module Configuration
@@ -169,14 +210,8 @@ module Intention
         end
 
         def register(name, &block)
-          procedure = block.call(attribute)
-
-          Instance.define_singleton_method(name) do |attribute_name, *args, **kwargs, &method_block|
-            attribute = Instance.attributes.get(attribute_name)
-
-            tap do
-              block.call(attribute, *args, **kwargs, &method_block)
-            end
+          Instance.define_singleton_method(name) do |attribute_name, *args, **kwargs, &block|
+            attribute(attribute_name).public_send(entry_name, *args, **kwargs, &block)
           end
         end
       end
@@ -222,15 +257,9 @@ module Intention
           end
         end
 
-        register :required do |attribute, error_class = RequiredAttributeError, &block|
-          attribute.get(:default).reset
-          attribute.get(:required).set(error_class: error_class, callable: block)
-        end
-        
-        register :default do |attribute, &block|
-          attribute.get(:required).reset
-          attribute.get(:default).set(callable: block)
-        end
+        # This seems silly, find a way to merge the two?
+        register(:required)
+        register(:default)
       end
     end
   end
