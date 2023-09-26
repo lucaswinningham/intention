@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'attribution/attribute'
+require_relative 'attribution'
 
 module Intention
   module Serialization # rubocop:disable Style/Documentation
@@ -8,6 +8,8 @@ module Intention
       private
 
       def included(base)
+        base.include Attribution
+
         base.extend ClassMethods
       end
     end

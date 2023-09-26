@@ -5,6 +5,13 @@ require 'securerandom'
 require_relative 'attribute/accessors'
 require_relative 'attribute/authorized_access_registry'
 
+class ReadonlyStruct < Struct
+  def initialize(*args, **kwargs, &block)
+    super(*args, **kwargs, &block)
+    freeze
+  end
+end
+
 module Intention
   class RequiredAttributeError < Error; end
 
@@ -13,6 +20,8 @@ module Intention
       class ClassRequiredError < Error; end
       class NameRequiredError < Error; end
       class UnparsableNameError < Error; end
+
+      Required = Struct.new(:error, :callable, keyword_init: true)
 
       class << self
         def registry
@@ -139,6 +148,10 @@ module Intention
 
       registry.add :readable, key: key
 
+      def readable?
+        @is_readable
+      end
+
       def writable(is_writable = true) # rubocop:disable Style/OptionalBooleanParameter
         tap do
           reflux { @is_writable = !!is_writable }
@@ -146,6 +159,10 @@ module Intention
       end
 
       registry.add :writable, key: key
+
+      def writable?
+        @is_writable
+      end
 
       def withheld(is_withheld = true) # rubocop:disable Style/OptionalBooleanParameter
         tap do
@@ -199,9 +216,9 @@ module Intention
         Accessors.define(
           class: @klass,
           name: name,
-          accessible: @is_accessible,
-          readable: @is_readable,
-          writable: @is_writable,
+          accessible: accessible?,
+          readable: readable?,
+          writable: writable?,
           loads: loads_callable
         )
       end

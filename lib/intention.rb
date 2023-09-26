@@ -5,6 +5,7 @@ require_relative 'intention/version'
 require_relative 'intention/refinements'
 
 require_relative 'intention/error'
+
 require_relative 'intention/initialization'
 require_relative 'intention/attribution'
 require_relative 'intention/serialization'
@@ -23,11 +24,14 @@ module Intention # rubocop:disable Style/Documentation
     end
 
     def included(base)
-      base.include Initialization
       base.include Attribution
+      base.include Initialization
       base.include Serialization
       base.include Strict
       # base.include Mutation # "dirty"
     end
   end
 end
+
+Intention::Attribute.include Intention::Ingestion::Attribute::Configuration
+Intention::Instance.include Intention::Ingestion::Instance::Configuration

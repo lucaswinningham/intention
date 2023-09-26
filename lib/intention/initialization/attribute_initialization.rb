@@ -34,8 +34,8 @@ module Intention
       end
 
       def determine_missing_value
-        if attribute.required? && attribute.required_callable.call(instance)
-          raise attribute.required_error
+        if attribute.required? && attribute.required.callable.call(instance)
+          raise attribute.required.error
         end
 
         attribute.default_callable.call(instance) if attribute.default?

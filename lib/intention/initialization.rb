@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'attribution'
+
 require_relative 'initialization/verify_input_hash'
 require_relative 'initialization/attribute_initialization'
 
@@ -9,6 +11,8 @@ module Intention
       private
 
       def included(base)
+        base.include Attribution
+
         base.include InstanceMethods
       end
     end
