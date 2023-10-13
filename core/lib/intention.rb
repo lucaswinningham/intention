@@ -20,7 +20,7 @@ module Intention # rubocop:disable Style/Documentation
       base.extend ClassMethods
 
       # TODO: `namespace` / `link` seems weird, needs better name
-      link = Link.new
+      link = Link.new(initialization: Middleware::Chain.new)
       link.define_singleton_method(:attributes) { base.__send__ :intention_attributes }
 
       base.define_method(:intention) { link }
@@ -59,7 +59,7 @@ module Intention # rubocop:disable Style/Documentation
       # intention.each_attribute do |attribute|
       #   block.call(input: intention_input, attribute: attribute)
       # end
-      Intention.configuration.initialization.call({
+      intention.initialization.call({
         instance: self,
         input: hash,
         intention: intention,

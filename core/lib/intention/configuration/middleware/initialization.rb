@@ -11,8 +11,12 @@ module Intention
 
           run do |payload, &block|
             instance = payload.fetch(:instance)
+            intention = payload.fetch(:intention)
 
-            # do stuff
+            intention.attributes.each do |name, attribute|
+              value = intention.valuation.call(payload.merge(attribute: attribute))
+              instance.__send__("#{name}=", value)
+            end
 
             block.call(payload)
           end
