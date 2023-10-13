@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
 module Intention
-  class Configuration # rubocop:disable Lint/EmptyClass
+  class Link # rubocop:disable Style/Documentation
   end
 end
