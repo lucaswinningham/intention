@@ -1,0 +1,339 @@
+#!/usr/bin/env ruby
+
+# frozen_string_literal: true
+
+require 'fileutils'
+
+# TODO: put refinements somewhere more "private" and for dev use only?
+require_relative '../lib/intention/refinements/string_refinements'
+
+using Intention::Refinements::StringRefinements::KebabCase
+using Intention::Refinements::StringRefinements::PascalCase
+using Intention::Refinements::StringRefinements::SlashCase
+using Intention::Refinements::StringRefinements::SnakeCase
+
+name = ARGV[0].downcase
+pascal_case_name = name.pascal_case
+intention_name = "intention #{name}"
+kebab_case_intention_name = intention_name.kebab_case
+slash_case_intention_name = intention_name.slash_case
+
+root = File.expand_path('..', __dir__)
+
+new_dir = "#{root}/#{kebab_case_intention_name}"
+FileUtils.mkdir_p(new_dir)
+
+bin_dir = "#{new_dir}/bin"
+FileUtils.mkdir_p(bin_dir)
+
+bin_console_file = "#{bin_dir}/console"
+# puts "bin_console_file: #{bin_console_file}"
+
+unless File.file?(bin_console_file)
+  File.open(bin_console_file, 'w') do |file|
+    file.puts('#!/usr/bin/env ruby')
+    file.puts('')
+    file.puts('# frozen_string_literal: true')
+    file.puts('')
+    file.puts("require 'bundler/setup'")
+    file.puts("require '#{slash_case_intention_name}'")
+    file.puts('')
+    file.puts("require 'irb'")
+    file.puts('IRB.start(__FILE__)')
+  end
+end
+
+FileUtils.chmod('+x', bin_console_file)
+
+lib_dir = "#{new_dir}/lib"
+lib_intention_dir = "#{lib_dir}/intention"
+lib_intention_name_dir = "#{lib_intention_dir}/#{name}"
+FileUtils.mkdir_p(lib_intention_name_dir)
+
+lib_intention_name_attribute_initialization_file = "#{lib_intention_name_dir}/attribute_initialization.rb"
+
+unless File.file?(lib_intention_name_attribute_initialization_file)
+  File.open(lib_intention_name_attribute_initialization_file, 'w') do |file|
+    file.puts('# frozen_string_literal: true')
+    file.puts('')
+    file.puts("require_relative 'data'")
+    file.puts('')
+    file.puts('module Intention')
+    file.puts("  module #{pascal_case_name}")
+    file.puts('    class AttributeInitialization')
+    file.puts('      def initialize(app)')
+    file.puts('        @app = app')
+    file.puts('      end')
+    file.puts('')
+    file.puts('      def call(payload)')
+    file.puts("        payload.fetch(:attribute).instance_variable_set(:@#{name}_data, Data.new)")
+    file.puts('')
+    file.puts('        @app.call(payload)')
+    file.puts('      end')
+    file.puts('    end')
+    file.puts('  end')
+    file.puts('end')
+  end
+end
+
+lib_intention_name_attribute_file = "#{lib_intention_name_dir}/attribute.rb"
+
+unless File.file?(lib_intention_name_attribute_file)
+  File.open(lib_intention_name_attribute_file, 'w') do |file|
+    file.puts('# frozen_string_literal: true')
+    file.puts('')
+    file.puts('module Intention')
+    file.puts("  module #{pascal_case_name}")
+    file.puts('    module Attribute')
+    file.puts("      attr_reader :#{name}_data")
+    file.puts('')
+    file.puts("      def #{name}?")
+    file.puts("        #{name}_data.set?")
+    file.puts('      end')
+    file.puts('    end')
+    file.puts('  end')
+    file.puts('end')
+  end
+end
+
+lib_intention_name_data_file = "#{lib_intention_name_dir}/data.rb"
+
+unless File.file?(lib_intention_name_data_file)
+  File.open(lib_intention_name_data_file, 'w') do |file|
+    file.puts('# frozen_string_literal: true')
+    file.puts('')
+    file.puts('module Intention')
+    file.puts("  module #{pascal_case_name}")
+    file.puts('    class Data')
+    file.puts('      def set?')
+    file.puts('        @set')
+    file.puts('      end')
+    file.puts('')
+    file.puts('      def set')
+    file.puts('        @set = true')
+    file.puts('      end')
+    file.puts('    end')
+    file.puts('  end')
+    file.puts('end')
+  end
+end
+
+lib_intention_name_initialization_file = "#{lib_intention_name_dir}/initialization.rb"
+
+unless File.file?(lib_intention_name_initialization_file)
+  File.open(lib_intention_name_initialization_file, 'w') do |file|
+    file.puts('# frozen_string_literal: true')
+    file.puts('')
+    file.puts('module Intention')
+    file.puts("  module #{pascal_case_name}")
+    file.puts('    class Initialization')
+    file.puts('      def initialize(app)')
+    file.puts('        @app = app')
+    file.puts('      end')
+    file.puts('')
+    file.puts('      def call(payload)')
+    file.puts('        input = payload.fetch(:input)')
+    file.puts('        instance = payload.fetch(:instance)')
+    file.puts('')
+    file.puts('        payload.fetch(:intention).attributes.each do |name, attribute|')
+    file.puts('          # TODO')
+    file.puts('        end')
+    file.puts('')
+    file.puts('        @app.call(payload)')
+    file.puts('      end')
+    file.puts('    end')
+    file.puts('  end')
+    file.puts('end')
+  end
+end
+
+lib_intention_name_version_file = "#{lib_intention_name_dir}/version.rb"
+
+unless File.file?(lib_intention_name_version_file)
+  File.open(lib_intention_name_version_file, 'w') do |file|
+    file.puts('# frozen_string_literal: true')
+    file.puts('')
+    file.puts('module Intention')
+    file.puts("  module #{pascal_case_name}")
+    file.puts('    module Version')
+    file.puts("      STRING = '0.0.1'")
+    file.puts('    end')
+    file.puts('  end')
+    file.puts('end')
+  end
+end
+
+lib_intention_name_file = "#{lib_intention_dir}/#{name}.rb"
+
+unless File.file?(lib_intention_name_file)
+  File.open(lib_intention_name_file, 'w') do |file|
+    file.puts('# frozen_string_literal: true')
+    file.puts('')
+    file.puts("require 'intention/core'")
+    file.puts('')
+    file.puts("require_relative '#{name}/attribute'")
+    file.puts("require_relative '#{name}/attribute_initialization'")
+    file.puts("require_relative '#{name}/initialization'")
+    file.puts('')
+    file.puts("require_relative '#{name}/data'")
+    file.puts('')
+    file.puts('module Intention')
+    file.puts("  module #{pascal_case_name}")
+    file.puts('    class << self')
+    file.puts('      def configure')
+    file.puts('        Intention.configure do |configuration|')
+    file.puts('          configuration.attribute_initialization.use(AttributeInitialization)')
+    file.puts('          configuration.initialization.use(Initialization)')
+    file.puts('          configuration.attribute.include(Attribute)')
+    file.puts("          configuration.attribute.register(:#{name}) do |*args, **kwargs, &block|")
+    file.puts('            tap do')
+    file.puts("              #{name}_data.set(*args, **kwargs, &block)")
+    file.puts('            end')
+    file.puts('          end')
+    file.puts('        end')
+    file.puts('      end')
+    file.puts('    end')
+    file.puts('  end')
+    file.puts('end')
+  end
+end
+
+spec_dir = "#{new_dir}/spec"
+spec_intention_dir = "#{spec_dir}/intention"
+spec_intention_name_dir = "#{spec_intention_dir}/#{name}"
+FileUtils.mkdir_p(spec_intention_name_dir)
+
+spec_intention_name_file = "#{spec_intention_dir}/#{name}_spec.rb"
+
+unless File.file?(spec_intention_name_file)
+  File.open(spec_intention_name_file, 'w') do |file|
+    file.puts('# frozen_string_literal: true')
+    file.puts('')
+    file.puts('module Intention')
+    file.puts("  describe #{pascal_case_name} do")
+    file.puts("    before { Intention::#{pascal_case_name}.configure }")
+    file.puts('')
+    file.puts("    describe 'consumer' do")
+    file.puts("      describe 'without ::#{name}' do")
+    file.puts('        subject do')
+    file.puts('          Class.new do')
+    file.puts('            include Intention')
+    file.puts('            attribute(:foo)')
+    file.puts('          end')
+    file.puts('        end')
+    file.puts('')
+    file.puts("        it '...'")
+    file.puts('      end')
+    file.puts('')
+    file.puts("      describe 'with ::#{name}' do")
+    file.puts('        subject do')
+    file.puts('          Class.new do')
+    file.puts('            include Intention')
+    file.puts("            #{name}(:bar)")
+    file.puts('          end')
+    file.puts('        end')
+    file.puts('')
+    file.puts("        it '...'")
+    file.puts('      end')
+    file.puts('')
+    file.puts("      it 'can be chained' do")
+    file.puts('        expect {')
+    file.puts('          Class.new do')
+    file.puts('            include Intention')
+    file.puts("            attribute(:baz).#{name}")
+    file.puts('          end')
+    file.puts('        }.not_to raise_error')
+    file.puts('      end')
+    file.puts('    end')
+    file.puts('  end')
+    file.puts('end')
+  end
+end
+
+spec_spec_helper_file = "#{spec_dir}/spec_helper.rb"
+
+unless File.file?(spec_spec_helper_file)
+  File.open(spec_spec_helper_file, 'w') do |file|
+    file.puts('# frozen_string_literal: true')
+    file.puts('')
+    file.puts("require 'bundler/setup'")
+    file.puts("require 'intention/#{name}'")
+    file.puts('')
+    file.puts("require_relative '../spec/spec_helper'")
+  end
+end
+
+rspec_file = "#{new_dir}/.rspec"
+
+unless File.file?(rspec_file)
+  File.open(rspec_file, 'w') do |file|
+    file.puts('--order random')
+    file.puts('--format documentation')
+    file.puts('--color')
+    file.puts('--require spec_helper')
+  end
+end
+
+gemfile_file = "#{new_dir}/Gemfile"
+
+unless File.file?(gemfile_file)
+  File.open(gemfile_file, 'w') do |file|
+    file.puts('# frozen_string_literal: true')
+    file.puts('')
+    file.puts("source 'https://rubygems.org'")
+    file.puts('')
+    file.puts('gemspec')
+    file.puts('')
+    file.puts('%w[intention-core].each do |lib|')
+    file.puts('  library_path = File.expand_path("../../#{lib}", __FILE__)')
+    file.puts('')
+    file.puts('  gem lib, path: library_path')
+    file.puts('end')
+  end
+end
+
+gemspec_file = "#{new_dir}/#{kebab_case_intention_name}.gemspec"
+
+unless File.file?(gemspec_file)
+  File.open(gemspec_file, 'w') do |file|
+    file.puts('# frozen_string_literal: true')
+    file.puts('')
+    file.puts("lib = File.expand_path('../lib', __FILE__)")
+    file.puts('$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)')
+    file.puts('')
+    file.puts("require 'intention/#{name}/version'")
+    file.puts('')
+    file.puts('Gem::Specification.new do |spec|')
+    file.puts("  spec.name = 'intention-#{name}'")
+    file.puts("  spec.version = Intention::#{pascal_case_name}::Version::STRING")
+    file.puts("  spec.authors = ['Lucas Winningham']")
+    file.puts("  spec.email = ['lucas.winningham@gmail.com']")
+    file.puts('')
+    file.puts("  spec.summary = 'Ruby gem with the greatest intentions (for hash objects).'")
+    file.puts('  spec.description = <<-DESCRIPTION')
+    file.puts('    Intention is a ...')
+    file.puts('    Should fill this in.')
+    file.puts('  DESCRIPTION')
+    file.puts("  spec.homepage = 'https://github.com/lucaswinningham/intention-#{name}'")
+    file.puts("  spec.license = 'MIT'")
+    file.puts("  spec.required_ruby_version = Gem::Requirement.new('>= 3.0')")
+    file.puts('')
+    file.puts("  spec.metadata['homepage_uri'] = spec.homepage")
+    file.puts("  spec.metadata['source_code_uri'] = 'https://github.com/lucaswinningham/intention-#{name}'")
+    file.puts("  spec.metadata['changelog_uri'] = 'https://github.com/lucaswinningham/intention-#{name}/blob/main/CHANGELOG.md'")
+    file.puts('')
+    file.puts("  spec.files = Dir.glob('lib/**/*', File::FNM_DOTMATCH)")
+    file.puts("  spec.bindir = 'bin'")
+    file.puts('  spec.executables = spec.files.grep(%r{\Abin/}) { |f| File.basename(f) }')
+    file.puts("  spec.require_paths = ['lib']")
+    file.puts('')
+    file.puts("  spec.add_development_dependency 'rake', '~> 13.0'")
+    file.puts("  spec.add_development_dependency 'rspec', '~> 3.4'")
+    file.puts("  spec.add_development_dependency 'rubocop', '~> 1.0'")
+    file.puts("  spec.add_development_dependency 'rubocop-rake', '~> 0.6'")
+    file.puts("  spec.add_development_dependency 'rubocop-rspec', '~> 2.15'")
+    file.puts('')
+    file.puts("  spec.metadata['rubygems_mfa_required'] = 'true'")
+    file.puts('end')
+  end
+end

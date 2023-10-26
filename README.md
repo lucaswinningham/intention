@@ -113,9 +113,11 @@ class Klass
   required(:required_attribute, RequiredAttributeError)
   optional(:optional_attribute) { :default }
   renamed(:not_renamed_attribute, :renamed_attribute)
-  withheld(:withheld_attribute)
+
   loads(:loaded_attribute, unless: proc(&:nil?)) { |x| x.to_s.downcase.to_sym }
   dumps(:dumped_attribute, &:hash)
+  withheld(:withheld_attribute)
+
   field(:calculated_attribute) { "#{required_attribute}: #{optional_attribute}" }
   hidden(:injected_dependency) { Klass::Dependency.new }
 
