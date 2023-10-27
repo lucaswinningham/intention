@@ -14,7 +14,11 @@ module Intention
         @name = options.fetch(:name)
         @intention = options.fetch(:intention)
 
-        @intention.attribute_initialization.call(attribute: self, intention: @intention)
+        @intention.attribute_initialization.call(
+          attribute: self,
+          intention: @intention,
+          klass: @klass,
+        )
 
         # @is_accessible = true
         # @is_readable = true
@@ -36,32 +40,32 @@ module Intention
         input.fetch(input_accessor, *args, **kwargs, &block)
       end
 
-      # TODO: orthoganality here with `define` / `define_getter` / `define_setter`?
-      def define(method_name, options = {}, &block)
-        @klass.undef_method(method_name) if @klass.method_defined?(method_name)
+      # # TODO: orthoganality here with `define` / `define_getter` / `define_setter`?
+      # def define(method_name, options = {}, &block)
+      #   @klass.undef_method(method_name) if @klass.method_defined?(method_name)
 
-        @klass.define_method(method_name, &block)
+      #   @klass.define_method(method_name, &block)
 
-        @klass.__send__(:private, method_name) if options.fetch(:private, false)
-      end
+      #   @klass.__send__(:private, method_name) if options.fetch(:private, false)
+      # end
 
-      def define_getter(options = {})
-        block ||= proc { |x| x }
-        local_name = name
+      # def define_getter(options = {}, &block)
+      #   block ||= proc { |x| x }
+      #   local_name = name
 
-        define(name, options) do
-          block.call(instance_variable_get(:"@#{local_name}"))
-        end
-      end
+      #   define(name, options) do
+      #     block.call(instance_variable_get(:"@#{local_name}"))
+      #   end
+      # end
 
-      def define_setter(options = {}, &block)
-        block ||= proc { |x| x }
-        local_name = name
+      # def define_setter(options = {}, &block)
+      #   block ||= proc { |x| x }
+      #   local_name = name
 
-        define("#{name}=", options) do |value|
-          instance_variable_set(:"@#{local_name}", block.call(value))
-        end
-      end
+      #   define("#{name}=", options) do |value|
+      #     instance_variable_set(:"@#{local_name}", block.call(value))
+      #   end
+      # end
 
       # def hash_accessor
       #   renamed? ? renamed_from : name

@@ -2,17 +2,14 @@
 
 module Intention
   module Configuration
-    module Initialization
+    module AttributeInitialization
       class AddAccessors
         def initialize(app)
           @app = app
         end
 
         def call(payload)
-          payload.fetch(:intention).attributes.each do |name, attribute|
-            attribute.define_getter
-            attribute.define_setter
-          end
+          payload.fetch(:klass).__send__(:attr_accessor, payload.fetch(:attribute).name)
 
           @app.call(payload)
         end

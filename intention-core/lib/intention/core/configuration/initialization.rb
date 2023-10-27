@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'initialization/add_accessors'
 require_relative 'initialization/set_values'
 
 module Intention
@@ -9,7 +8,6 @@ module Intention
       class << self
         def middleware
           @middleware ||= Middleware::Builder.new do
-            use AddAccessors
             use SetValues
           end
         end

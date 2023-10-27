@@ -153,7 +153,7 @@ TODO: Fill out below and OH! type checking stuff like `boolean` and whatnot!
 
 #### Attribute macros
 
-`attribute` base, optional, readable, writable, loads / dumps identity, uses name (not renamed)
+`attribute` base, optional, reader, writer, loads / dumps identity, uses name (not renamed)
 
 `required` must be given, error class, can take a proc that when ran and evaluates to true, throws error
 
@@ -171,11 +171,11 @@ TODO: Fill out below and OH! type checking stuff like `boolean` and whatnot!
 
 `accessible` controls whether a getter and setter are defined, defaults to `true`
 
-`readable` sets publicity of setter, defaults to `true`
+`reader` sets publicity of setter, defaults to `true`
 
-`writable` sets publicity of getter, defaults to `true`
+`writer` sets publicity of getter, defaults to `true`
 
-`hidden` `readable: false`, `writable: false`, `withheld: true`
+`hidden` `reader: false`, `writer: false`, `withheld: true`
 
 `expected`? `accessible: false`, `withheld: true`, expect the key but do nothing with / ignore it, for bypassing `strict!`.
 
@@ -308,7 +308,7 @@ include 'intention'
 module Readonly
   include Intention
 
-  writable false
+  writer false
 end
 
 module AnythingGoes

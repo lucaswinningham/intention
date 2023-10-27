@@ -18,6 +18,10 @@ module Intention
         attributes.each(&block)
       end
 
+      def names
+        attributes.keys
+      end
+
       private
 
       def attributes
