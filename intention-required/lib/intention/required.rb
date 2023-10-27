@@ -12,15 +12,20 @@ module Intention
   module Required
     class << self
       def configure
-        Intention.configure do |configuration|
-          configuration.attribute_initialization.use(AttributeInitialization)
-          configuration.initialization.use(Initialization)
-          configuration.attribute.include(Attribute)
-          configuration.attribute.register(:required!) do |*args, **kwargs, &block|
-            tap do
-              required_data.set(*args, **kwargs, &block)
+        @configured ||= begin
+          Intention.configure do |configuration|
+            configuration.attribute_initialization.use(AttributeInitialization)
+            configuration.initialization.use(Initialization)
+            configuration.attribute.include(Attribute)
+
+            configuration.attribute.register(:required!) do |*args, **kwargs, &block|
+              tap do
+                required_data.set(*args, **kwargs, &block)
+              end
             end
           end
+
+          :required_configured
         end
       end
     end

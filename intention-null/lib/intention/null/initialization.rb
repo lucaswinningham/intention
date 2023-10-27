@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Intention
-  module Default
+  module Null
     class Initialization
       def initialize(app)
         @app = app
@@ -10,13 +10,13 @@ module Intention
       def call(payload)
         input = payload.fetch(:input)
         instance = payload.fetch(:instance)
-        values = payload.fetch(:values)
 
         payload.fetch(:intention).attributes.each do |name, attribute|
-          next if attribute.given_in?(input)
-          next unless attribute.default?
+          next unless attribute.given_in?(input)
+          next unless attribute.null?
+          next unless attribute.value_in(input).nil?
 
-          instance.__send__("#{name}=", attribute.default_data.call(instance))
+          instance.__send__("#{name}=", attribute.null_data.call(instance))
         end
 
         @app.call(payload)

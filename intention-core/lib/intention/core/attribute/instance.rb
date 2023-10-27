@@ -1,34 +1,18 @@
 # frozen_string_literal: true
 
-# class ReadonlyStruct < Struct
-#   def initialize(*args, **kwargs, &block)
-#     super(*args, **kwargs, &block)
-#     freeze
-#   end
-# end
-
-# TODO: split `Instance` between "public" facing API-ish stuff and all this internal stuff
-
 module Intention
   module Attribute
     class Instance # rubocop:disable Style/Documentation
-      # class ClassRequiredError < Error; end
       # class NameRequiredError < Error; end
       # class UnparsableNameError < Error; end
 
-      # Required = Struct.new(:error, :callable, keyword_init: true)
-
-      # attr_reader :name, :required_error, :required_callable, :default_callable, :null_callable,
-      #             :renamed_from, :is_withheld
-
-      attr_reader :name, :input_accessor
+      attr_reader :name
 
       def initialize(options = {})
         @klass = options.fetch(:klass)
         # @name = sanitize_name options.fetch(:name) { raise NameRequiredError }
         @name = options.fetch(:name)
         @intention = options.fetch(:intention)
-        @input_accessor = name
 
         @intention.attribute_initialization.call(attribute: self, intention: @intention)
 

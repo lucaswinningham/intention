@@ -10,6 +10,9 @@ module Intention
           Intention::Attribute.registry.add(name)
 
           Intention::Attribute::Instance.define_method(name, &block)
+          Intention::Attribute::Proxy.define_method(name) do |*args, **kwargs, &block|
+            @attribute.public_send(name, *args, **kwargs, &block)
+          end
         end
 
         def include(mod)

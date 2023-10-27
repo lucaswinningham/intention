@@ -2,14 +2,14 @@
 
 require 'intention/core'
 
-require_relative 'default/attribute'
-require_relative 'default/attribute_initialization'
-require_relative 'default/initialization'
+require_relative 'null/attribute'
+require_relative 'null/attribute_initialization'
+require_relative 'null/initialization'
 
-require_relative 'default/data'
+require_relative 'null/data'
 
 module Intention
-  module Default
+  module Null
     class << self
       def configure
         @configured ||= begin
@@ -18,14 +18,14 @@ module Intention
             configuration.initialization.use(Initialization)
             configuration.attribute.include(Attribute)
 
-            configuration.attribute.register(:default) do |*args, **kwargs, &block|
+            configuration.attribute.register(:null) do |*args, **kwargs, &block|
               tap do
-                default_data.set(*args, **kwargs, &block)
+                null_data.set(*args, **kwargs, &block)
               end
             end
           end
 
-          :default_configured
+          :null_configured
         end
       end
     end

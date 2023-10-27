@@ -30,7 +30,6 @@ module Intention # rubocop:disable Style/Documentation
       base.__send__(:private, :intention)
 
       base.extend class_methods
-      # base.include InstanceMethods
     end
 
     def class_methods
@@ -38,7 +37,7 @@ module Intention # rubocop:disable Style/Documentation
         private
 
         def attribute(name)
-          intention.attributes[name]
+          intention.attributes.proxies[name]
         end
 
         Attribute.registry.each do |entry_name|
@@ -52,10 +51,6 @@ module Intention # rubocop:disable Style/Documentation
 
   def initialize(hash = {})
     # @intention_input = hash.transform_keys(&:to_sym)
-
-    # intention.each_attribute do |attribute|
-    #   block.call(input: intention_input, attribute: attribute)
-    # end
 
     intention.initialization.call(
       input: hash,

@@ -155,9 +155,9 @@ TODO: Fill out below and OH! type checking stuff like `boolean` and whatnot!
 
 `attribute` base, optional, readable, writable, loads / dumps identity, uses name (not renamed)
 
-`required` must be given, error class, takes precedence over `default`, can take a proc that when ran and evaluates to true, throws error
+`required` must be given, error class, can take a proc that when ran and evaluates to true, throws error
 
-`default` proc ran when not given (conflicts(sp?) with `required`), can use previously processed intance attributes in proc for determining default value as it is passed the instance
+`default` proc ran when not given, can use previously processed instance attributes in proc for determining default value as it is passed the instance
 
 `null` proc ran when given nil, different from `default` in that `default` is ran when a value is not given, `null` runs when nil is what is given
 
