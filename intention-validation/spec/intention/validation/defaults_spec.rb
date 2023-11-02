@@ -1,5 +1,5 @@
 module Intention
-  describe Required do
+  describe Validation do
     describe 'defaults' do
       describe '::attribute' do
         subject(:klass) { Intention.new { attribute(:foo) } }

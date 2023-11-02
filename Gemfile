@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'intention', path: File.expand_path('intention-metagem', __dir__)
+# gem 'intention', path: File.expand_path('intention-metagem', __dir__)
 
 group :development do
   gem 'rubocop', '~> 1.56'

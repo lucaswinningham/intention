@@ -100,15 +100,6 @@ module Intention
       #     loads: loads_callable
       #   )
       # end
-
-      # def reset_required
-      #   @required_error = nil
-      #   @required_callable = nil
-      # end
-
-      # def reset_default
-      #   @default_callable = nil
-      # end
     end
   end
 end

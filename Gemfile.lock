@@ -1,8 +1,3 @@
-PATH
-  remote: intention-metagem
-  specs:
-    intention (0.0.1)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -47,7 +42,6 @@ PLATFORMS
   arm64-darwin-23
 
 DEPENDENCIES
-  intention!
   rubocop (~> 1.56)
   rubocop-rake (~> 0.6)
   rubocop-rspec (~> 2.25)

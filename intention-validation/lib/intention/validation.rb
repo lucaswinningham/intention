@@ -1,10 +1,10 @@
 require 'intention/core'
 
-require_relative 'required/attribute'
-require_relative 'required/initialization'
+require_relative 'validation/attribute'
+require_relative 'validation/initialization'
 
 module Intention
-  module Required
+  module Validation
     class << self
       def configure
         @configured ||= begin
@@ -17,7 +17,7 @@ module Intention
 
           configure_attribute_registrations
 
-          :required_configured
+          :validation_configured
         end
       end
 

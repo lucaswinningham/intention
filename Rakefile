@@ -1,6 +1,6 @@
 task default: :spec
 
-libs = %w[core access ingestion required].map { |lib| "intention-#{lib}" }
+libs = %w[core access ingestion validation].map { |lib| "intention-#{lib}" }
 
 desc "Run specs for #{libs.join(', ')}"
 task :spec do

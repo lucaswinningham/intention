@@ -1,10 +1,10 @@
 module Intention
-  describe Required do
+  describe Validation do
     describe 'registrations' do
       describe '::required!' do
         it 'requires the attribute to be given at initialization' do
           expect { Intention.new { required!(:bar) }.new }.to(
-            raise_error(Intention::RequiredAttributeError)
+            raise_error(Intention::Validation::RequiredAttributeError)
           )
         end
 
@@ -61,7 +61,7 @@ module Intention
               end
 
               it 'requires the attribute to be given at initialization' do
-                expect { klass.new }.to raise_error(Intention::RequiredAttributeError)
+                expect { klass.new }.to raise_error(Intention::Validation::RequiredAttributeError)
               end
             end
           end

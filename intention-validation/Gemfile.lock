@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    intention-required (0.1.0)
+    intention-validation (0.1.0)
 
 PATH
   remote: /Users/luke/code/intention/intention-core
@@ -14,7 +14,7 @@ GEM
   specs:
     diff-lcs (1.5.0)
     middleware (0.1.0)
-    rake (13.0.6)
+    rake (13.1.0)
     rspec (3.12.0)
       rspec-core (~> 3.12.0)
       rspec-expectations (~> 3.12.0)
@@ -34,7 +34,7 @@ PLATFORMS
 
 DEPENDENCIES
   intention-core!
-  intention-required!
+  intention-validation!
   rake (~> 13.0)
   rspec (~> 3.4)
 

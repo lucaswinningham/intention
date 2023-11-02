@@ -1,11 +1,19 @@
 module Intention
-  module Required
+  module Validation
     class Initialization
       def initialize(app)
         @app = app
       end
 
       def call(payload)
+        process_required_attributes(payload)
+
+        @app.call(payload)
+      end
+
+      private
+
+      def process_required_attributes(payload)
         input = payload.fetch(:input)
         instance = payload.fetch(:instance)
 
@@ -24,8 +32,6 @@ module Intention
 
           raise attribute.required_data.error_klass
         end
-
-        @app.call(payload)
       end
     end
   end
