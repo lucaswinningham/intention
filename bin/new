@@ -2,8 +2,7 @@
 
 require 'fileutils'
 
-# TODO: put refinements somewhere more "private" and for dev use only?
-require_relative '../lib/intention/refinements/string_refinements'
+require_relative '../utils/refinements/string_refinements'
 
 using Intention::Refinements::StringRefinements::KebabCase
 using Intention::Refinements::StringRefinements::PascalCase
@@ -128,7 +127,7 @@ unless File.file?(lib_intention_name_version_file)
     file.puts('module Intention')
     file.puts("  module #{pascal_case_name}")
     file.puts('    module Version')
-    file.puts("      STRING = '0.0.1'.freeze")
+    file.puts("      STRING = '0.1.0'.freeze")
     file.puts('    end')
     file.puts('  end')
     file.puts('end')
@@ -188,13 +187,13 @@ unless File.file?(spec_intention_name_file)
     file.puts("  describe #{pascal_case_name} do")
     file.puts("    describe '::#{name}' do")
     file.puts("      describe 'without ::#{name}' do")
-    file.puts('        subject { Intention.new { attribute(:foo) } }')
+    file.puts('        subject(:klass) { Intention.new { attribute(:foo) } }')
     file.puts('')
     file.puts("        it '...'")
     file.puts('      end')
     file.puts('')
     file.puts("      describe 'with ::#{name}' do")
-    file.puts("        subject { Intention.new { #{name}(:bar) } }")
+    file.puts("        subject(:klass) { Intention.new { #{name}(:bar) } }")
     file.puts('')
     file.puts("        it '...'")
     file.puts('      end')
@@ -247,7 +246,7 @@ unless File.file?(gemfile_file)
     file.puts('gemspec')
     file.puts('')
     file.puts('%w[intention-core].each do |lib|')
-    file.puts('  library_path = File.expand_path("../../#{lib}", __FILE__)')
+    file.puts('  library_path = File.expand_path("../#{lib}", __dir__)')
     file.puts('')
     file.puts('  gem lib, path: library_path')
     file.puts('end')
@@ -265,7 +264,7 @@ unless File.file?(gemspec_file)
   File.open(gemspec_file, 'w') do |file|
     file.puts('# frozen_string_literal: true')
     file.puts('')
-    file.puts("lib = File.expand_path('../lib', __FILE__)")
+    file.puts("lib = File.expand_path('lib', __dir__)")
     file.puts('$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)')
     file.puts('')
     file.puts("require 'intention/#{name}/version'")

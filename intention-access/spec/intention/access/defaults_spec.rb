@@ -5,7 +5,7 @@ module Intention
   describe Access do
     describe 'defaults' do
       describe '::attribute' do
-        subject { Intention.new { attribute(:foo) } }
+        subject(:klass) { Intention.new { attribute(:foo) } }
 
         include_examples('readable', :foo)
         include_examples('writable', :foo)

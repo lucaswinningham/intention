@@ -1,10 +1,10 @@
 module Intention
   describe Ingestion do
     describe 'defaults' do
-      subject { Intention.new { attribute(:foo) } }
+      subject(:klass) { Intention.new { attribute(:foo) } }
 
       describe 'when not given a value for the attribute' do
-        let(:instance) { subject.new }
+        let(:instance) { klass.new }
 
         it 'attribute value is `nil`' do
           expect(instance.foo).to be_nil
@@ -12,7 +12,7 @@ module Intention
       end
 
       describe 'when given a `nil` value for the attribute' do
-        let(:instance) { subject.new(foo: nil) }
+        let(:instance) { klass.new(foo: nil) }
 
         it 'attribute value is `nil`' do
           expect(instance.foo).to be_nil
@@ -20,7 +20,7 @@ module Intention
       end
 
       describe 'when given a non `nil` value for the attribute' do
-        let(:instance) { subject.new(foo: :foo) }
+        let(:instance) { klass.new(foo: :foo) }
 
         it 'attribute value is the given value' do
           expect(instance.foo).to be(:foo)

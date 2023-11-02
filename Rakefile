@@ -1,6 +1,12 @@
-require 'bundler/gem_tasks'
-require 'rspec/core/rake_task'
-
-RSpec::Core::RakeTask.new(:spec)
-
 task default: :spec
+
+libs = %w[core access ingestion required].map { |lib| "intention-#{lib}" }
+
+desc "Run specs for #{libs.join(', ')}"
+task :spec do
+  libs.each do |lib|
+    FileUtils.cd(File.expand_path(lib, __dir__))
+
+    system('rspec', out: $stdout, err: :out)
+  end
+end

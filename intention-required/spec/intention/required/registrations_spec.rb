@@ -16,14 +16,14 @@ module Intention
         describe 'when given a custom error' do
           let(:test_error) { Class.new(StandardError) }
 
-          subject do
+          subject(:klass) do
             local_test_error = test_error
 
             Intention.new { required!(:qux, local_test_error) }
           end
 
           describe 'when the attribute is not given at initialization' do
-            let(:instance) { subject.new }
+            let(:instance) { klass.new }
 
             it 'raises the given custom error' do
               expect { instance }.to raise_error(test_error)

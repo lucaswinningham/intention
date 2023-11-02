@@ -1,12 +1,12 @@
 PATH
   remote: .
   specs:
-    intention-access (0.0.1)
+    intention-access (0.1.0)
 
 PATH
   remote: /Users/luke/code/intention/intention-core
   specs:
-    intention-core (0.0.1)
+    intention-core (0.1.0)
       middleware (= 0.1.0)
 
 GEM

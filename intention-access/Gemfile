@@ -2,8 +2,9 @@ source 'https://rubygems.org'
 
 gemspec
 
-%w[intention-core].each do |lib|
-  library_path = File.expand_path("../../#{lib}", __FILE__)
+%w[core].each do |lib_suffix|
+  lib = "intention-#{lib_suffix}"
+  library_path = File.expand_path("../#{lib}", __dir__)
 
   gem lib, path: library_path
 end

@@ -27,11 +27,11 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   # # TODO: address!
-  # %w[core expectations mocks].each do |name|
-  #   if RSpec::Version::STRING =~ /[a-zA-Z]+/
-  #     s.add_runtime_dependency "rspec-#{name}", "= #{RSpec::Version::STRING}"
-  #   else
-  #     s.add_runtime_dependency "rspec-#{name}", "~> #{RSpec::Version::STRING.split('.')[0..1].concat(['0']).join('.')}"
-  #   end
-  # end
+  %w[core access ingestion required].each do |name|
+    if Intention::Version::STRING =~ /[a-zA-Z]+/
+      spec.add_runtime_dependency "intention-#{name}", "= #{Intention::Version::STRING}"
+    else
+      spec.add_runtime_dependency "intention-#{name}", "~> #{Intention::Version::STRING.split('.')[0..1].concat(['0']).join('.')}"
+    end
+  end
 end

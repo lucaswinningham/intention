@@ -30,6 +30,12 @@ RSpec/DescribeClass:
       - instance_method
       - version
 
+RSpec/FilePath:
+  Enabled: false
+
+RSpec/SpecFilePathFormat:
+  Enabled: false
+
 RSpec/NestedGroups:
   Max: 6
 
