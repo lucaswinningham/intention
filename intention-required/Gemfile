@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 source 'https://rubygems.org'
 
 gemspec
@@ -21,3 +19,8 @@ end
 #     gem lib, :git => "https://github.com/rspec/#{lib}.git", :branch => branch
 #   end
 # end
+
+group :development do
+  gem 'rake', '~> 13.0'
+  gem 'rspec', '~> 3.4'
+end

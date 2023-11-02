@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require_relative 'split_case'
 
 using Intention::Refinements::StringRefinements::SplitCase
@@ -7,7 +5,7 @@ using Intention::Refinements::StringRefinements::SplitCase
 module Intention
   module Refinements
     module StringRefinements
-      module SnakeCase # rubocop:disable Style/Documentation
+      module SnakeCase
         refine String do
           def snake_case
             split_case.join('_')

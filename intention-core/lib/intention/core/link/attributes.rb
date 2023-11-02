@@ -1,8 +1,6 @@
-# frozen_string_literal: true
-
 module Intention
   module Link
-    class Attributes # rubocop:disable Style/Documentation
+    class Attributes
       def initialize(options = {})
         @intention = options.fetch(:intention)
         @klass = options.fetch(:klass)
@@ -24,6 +22,8 @@ module Intention
 
       private
 
+      # TODO: set up mechanism (middleware?) for when attribute is added so
+      # TODO: we can query like `attributes.required` (for Initialization speed up)
       def attributes
         @attributes ||= Hash.new do |hash, name|
           hash[name] = Intention::Attribute.new(intention: @intention, klass: @klass, name: name)

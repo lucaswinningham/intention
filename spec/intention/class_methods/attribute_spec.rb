@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'support/matchers/have_method'
 
 RSpec.describe '::attribute', type: :class_method do

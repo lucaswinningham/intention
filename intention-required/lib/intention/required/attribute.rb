@@ -1,12 +1,10 @@
-# frozen_string_literal: true
+require_relative 'data'
 
 module Intention
   module Required
     module Attribute
-      attr_reader :required_data
-
-      def required?
-        required_data.set?
+      def required_data
+        @required_data ||= Data.new
       end
     end
   end

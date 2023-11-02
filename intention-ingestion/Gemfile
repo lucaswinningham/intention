@@ -1,0 +1,14 @@
+source 'https://rubygems.org'
+
+gemspec
+
+%w[intention-core intention-access].each do |lib|
+  library_path = File.expand_path("../../#{lib}", __FILE__)
+
+  gem lib, path: library_path
+end
+
+group :development do
+  gem 'rake', '~> 13.0'
+  gem 'rspec', '~> 3.4'
+end

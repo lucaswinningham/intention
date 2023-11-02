@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require_relative 'intention/configuration'
 require_relative 'intention/version'
 require_relative 'intention/refinements'
@@ -11,7 +9,7 @@ require_relative 'intention/attribution'
 require_relative 'intention/serialization'
 require_relative 'intention/strict'
 
-module Intention # rubocop:disable Style/Documentation
+module Intention
   class << self
     def configure(&block)
       block&.call(config)

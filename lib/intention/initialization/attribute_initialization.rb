@@ -1,8 +1,6 @@
-# frozen_string_literal: true
-
 module Intention
   module Initialization
-    class AttributeInitialization # rubocop:disable Style/Documentation
+    class AttributeInitialization
       attr_reader :instance, :attribute, :input_hash
 
       def initialize(options = {})

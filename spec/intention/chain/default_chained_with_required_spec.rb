@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe '::default chained with ::required', type: :chain do
   let(:klass) do
     Class.new do

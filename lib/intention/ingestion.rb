@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Intention
   class Entries
     def add(block)
@@ -210,8 +208,8 @@ module Intention
         end
 
         def register(name, &block)
-          Instance.define_singleton_method(name) do |attribute_name, *args, **kwargs, &block|
-            attribute(attribute_name).public_send(entry_name, *args, **kwargs, &block)
+          Instance.define_singleton_method(name) do |attribute_name, ...|
+            attribute(attribute_name).public_send(entry_name, ...)
           end
         end
       end

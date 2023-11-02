@@ -1,9 +1,7 @@
-# frozen_string_literal: true
-
 require_relative 'attribution'
 
 module Intention
-  module Serialization # rubocop:disable Style/Documentation
+  module Serialization
     class << self
       private
 
@@ -14,7 +12,7 @@ module Intention
       end
     end
 
-    module ClassMethods # rubocop:disable Style/Documentation
+    module ClassMethods
       private
 
       def serializable

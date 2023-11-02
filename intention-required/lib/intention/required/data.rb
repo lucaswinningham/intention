@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Intention
   class RequiredAttributeError < StandardError; end
 
@@ -18,8 +16,8 @@ module Intention
         @set = true
       end
 
-      def call(*args, **kwargs, &block)
-        @callable.call(*args, **kwargs, &block)
+      def call(...)
+        @callable.call(...)
       end
     end
   end

@@ -149,41 +149,60 @@ end
 
 ### Macros
 
-TODO: Fill out below and OH! type checking stuff like `boolean` and whatnot!
+TODO: Fill out below and OH! type checking stuff like `boolean` and whatnot! (hmm, well maybe not...)
 
 #### Attribute macros
 
-`attribute` base, optional, reader, writer, loads / dumps identity, uses name (not renamed)
+`attribute` base, optional, public getter, public setter, loads / dumps identity, uses name (not renamed)
 
-`required` must be given, error class, can take a proc that when ran and evaluates to true, throws error
+##### Access
 
-`default` proc ran when not given, can use previously processed instance attributes in proc for determining default value as it is passed the instance
+`accessible` sets reader (if exists) to public, sets writer (if exists) to public
 
-`null` proc ran when given nil, different from `default` in that `default` is ran when a value is not given, `null` runs when nil is what is given
+`inaccessible` sets reader (if exists) to private, sets writer (if exists) to private
 
-`coerce` proc that's given to both `default` and `null`
+`readonly` sets reader (if exists) to public, sets writer (if exists) to private
+
+`writeonly` sets reader (if exists) to private, sets writer (if exists) to public
+
+`ignore_reader` undefines reader
+
+`ignore_writer` undefines writer
+
+`ignore == ignore_reader.ignore_writer`
+
+##### Ingestion
+
+`default(&block)` supplies a default value via return value of the block when the attribute is not given at initialization. Block is optional and defaults to an empty block which returns `nil`.
+can use previously processed instance attributes in proc for determining default value as it is passed the instance???
+
+`null(&block)` supplies a default value via return value of the block when the given attribute value at initialization is `nil`. Block is optional and defaults to an empty block which returns `nil`.
+
+`coerce(&block) == default(&block).null(&block)` supplies a default value via return value of the block when the given attribute value at initialization is `nil` or when the attribute value is not given at initialization. Block is optional and defaults to an empty block which returns `nil`.
+
+##### Validation
+
+`required!(Error, &block)` declares that the attribute must be given at initialization. Takes an optional error class as an argument. Block is optional and defaults to a block that returns true. The block is ran when the attribute is not given at initialization. If the block returns a truthy value, the given error class (or a default supplied error class) will be raised.
+
+##### Foo
 
 `renamed` rename incoming key
 
+`alias?` alias attribute
+
 `loads` run incoming value serialization
-
-`withheld` does not get serialized in `to_h`
-
-`accessible` controls whether a getter and setter are defined, defaults to `true`
-
-`reader` sets publicity of setter, defaults to `true`
-
-`writer` sets publicity of getter, defaults to `true`
-
-`hidden` `reader: false`, `writer: false`, `withheld: true`
-
-`expected`? `accessible: false`, `withheld: true`, expect the key but do nothing with / ignore it, for bypassing `strict!`.
-
-`field` proc that's given to `default`, `hidden`, good for injected dependencies / calculated attributes -- as in attributes that will never be given values in the input hash. Note: If a value _is_ given in the input hash, that value will be assigned as the value for the attribute (for testing).
 
 `dumps` run outgoing value serialization for `to_h` (if applicable)
 
-If any two are conflicting, takes the last. Examples / list ... like `default.required`
+`withheld` does not get serialized in `to_h`
+
+`hidden == inaccessible.withheld`
+
+`expected`? `ignore`, `withheld: true`, expect the key but do nothing with / ignore it, for bypassing `strict!`.
+
+`field` proc that's given to `default`, `hidden`, good for injected dependencies / calculated attributes -- as in attributes that will never be given values in the input hash. Note: If a value _is_ given in the input hash, that value will be assigned as the value for the attribute (good for dependency injection testing).
+
+If any two are conflicting, takes the last. Examples / list ... like `default.required` ?...
 
 Values are memoized, can configure with `unmemoize` ?...
 
@@ -210,7 +229,7 @@ class Klass
   attribute(:name)
 
   def initialization(name, options = {})
-    initialize_intention options.merge(name: name)
+    intention.initialization.call(input: options.merge(name: name), instance: self)
   end
 end
 

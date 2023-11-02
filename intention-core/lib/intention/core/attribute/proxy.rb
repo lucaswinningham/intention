@@ -1,8 +1,6 @@
-# frozen_string_literal: true
-
 module Intention
   module Attribute
-    class Proxy # rubocop:disable Style/Documentation
+    class Proxy
       def initialize(attribute)
         @attribute = attribute
       end

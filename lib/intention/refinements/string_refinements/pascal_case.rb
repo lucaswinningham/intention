@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require_relative 'split_case'
 
 using Intention::Refinements::StringRefinements::SplitCase
@@ -7,7 +5,7 @@ using Intention::Refinements::StringRefinements::SplitCase
 module Intention
   module Refinements
     module StringRefinements
-      module PascalCase # rubocop:disable Style/Documentation
+      module PascalCase
         refine String do
           def pascal_case
             split_case.map(&:capitalize).join

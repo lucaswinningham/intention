@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require_relative 'core/attribute'
 require_relative 'core/configuration'
 require_relative 'core/link'
@@ -7,7 +5,7 @@ require_relative 'core/link'
 # TODO: Allow `Intention.new(...) do ... end` like `Struct`
 # TODO: Allow `Intention::Base` like `ActiveRecord::Base`
 
-module Intention # rubocop:disable Style/Documentation
+module Intention
   class << self
     def configure(&block)
       block&.call(configuration)
@@ -15,6 +13,14 @@ module Intention # rubocop:disable Style/Documentation
 
     def configuration
       Configuration
+    end
+
+    def new(&block)
+      Class.new do
+        include Intention
+
+        class_eval(&block)
+      end
     end
 
     private
@@ -32,6 +38,7 @@ module Intention # rubocop:disable Style/Documentation
       base.extend class_methods
     end
 
+    # rubocop:disable Metrics/MethodLength
     def class_methods
       Module.new do
         private
@@ -47,16 +54,20 @@ module Intention # rubocop:disable Style/Documentation
         end
       end
     end
+    # rubocop:enable Metrics/MethodLength
   end
 
   def initialize(hash = {})
     # @intention_input = hash.transform_keys(&:to_sym)
 
-    intention.initialization.call(
-      input: hash,
-      instance: self,
-      intention: intention,
-      values: {},
-    )
+    intention.initialization.call(input: hash, instance: self)
   end
+
+  # # TODO: doesn't work!
+  # # `Intention` included before configurations and
+  # # changes therein are not honored on declaration of `Base` and
+  # # by extension inherited classes also don't have access to configuration changes
+  # class Base
+  #   include Intention
+  # end
 end

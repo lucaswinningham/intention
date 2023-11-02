@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe '::coerce chained with ::loads', type: :chain do
   let(:coerce_callable) { proc {} }
   let(:loads_callable) { proc {} }

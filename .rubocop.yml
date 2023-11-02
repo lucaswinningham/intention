@@ -11,8 +11,16 @@ AllCops:
 Layout/LineLength:
   Max: 100
 
-NestedGroups:
-  Max: 5
+Metrics/ModuleLength:
+  Exclude:
+    - "**/*_spec.rb"
+    - "**/spec/**/*"
+
+Naming/MemoizedInstanceVariableName:
+  Enabled: false
+
+# NestedGroups:
+#   Max: 5
 
 RSpec/DescribeClass:
   IgnoredMetadata:
@@ -21,3 +29,18 @@ RSpec/DescribeClass:
       - class_method
       - instance_method
       - version
+
+RSpec/NestedGroups:
+  Max: 6
+
+Style/BlockDelimiters:
+  EnforcedStyle: braces_for_chaining
+
+Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  EnforcedStyle: never
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: consistent_comma

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Intention
   RSpec.describe '::VERSION', type: :version do
     it 'is defined' do

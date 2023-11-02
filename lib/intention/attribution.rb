@@ -1,9 +1,7 @@
-# frozen_string_literal: true
-
 require_relative 'attribution/attribute'
 
 module Intention
-  module Attribution # rubocop:disable Style/Documentation
+  module Attribution
     class << self
       private
 
@@ -21,7 +19,7 @@ module Intention
       end
     end
 
-    module ClassMethods # rubocop:disable Style/Documentation
+    module ClassMethods
       private
 
       def attribute(name)
@@ -29,8 +27,8 @@ module Intention
       end
 
       Attribute.registry.each do |entry_name|
-        define_method entry_name do |attribute_name, *args, **kwargs, &block|
-          attribute(attribute_name).public_send(entry_name, *args, **kwargs, &block)
+        define_method entry_name do |attribute_name, ...|
+          attribute(attribute_name).public_send(entry_name, ...)
         end
       end
 

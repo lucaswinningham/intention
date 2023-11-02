@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Intention
   module Required
     class Initialization
@@ -11,9 +9,17 @@ module Intention
         input = payload.fetch(:input)
         instance = payload.fetch(:instance)
 
-        payload.fetch(:intention).attributes.each do |name, attribute|
+        # # TODO: uncomment when we've figured out attributes scopes
+        # payload.fetch(:intention).attributes.required.each do |name, attribute|
+        #   next if attribute.given_in?(input)
+        #   next unless attribute.required_data.call(instance)
+
+        #   raise attribute.required_data.error_klass
+        # end
+
+        payload.fetch(:intention).attributes.each do |_, attribute|
+          next unless attribute.required_data.set?
           next if attribute.given_in?(input)
-          next unless attribute.required?
           next unless attribute.required_data.call(instance)
 
           raise attribute.required_data.error_klass

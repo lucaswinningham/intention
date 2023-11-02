@@ -1,0 +1,14 @@
+# https://github.com/rspec/rspec-metagem/blob/main/.gitignore
+
+*.sw?
+.DS_Store
+coverage
+doc
+pkg
+Gemfile.lock
+.bundle
+*.rbc
+bin
+bundle
+.bundle
+specs.out

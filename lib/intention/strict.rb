@@ -1,11 +1,9 @@
-# frozen_string_literal: true
-
 require_relative 'attribution/attribute'
 
 module Intention
   class UnexpectedKeysError < Error; end
 
-  module Strict # rubocop:disable Style/Documentation
+  module Strict
     class << self
       private
 
@@ -14,7 +12,7 @@ module Intention
       end
     end
 
-    module ClassMethods # rubocop:disable Style/Documentation
+    module ClassMethods
       def strict?
         !!@strict
       end

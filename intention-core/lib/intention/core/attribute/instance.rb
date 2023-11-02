@@ -1,8 +1,6 @@
-# frozen_string_literal: true
-
 module Intention
   module Attribute
-    class Instance # rubocop:disable Style/Documentation
+    class Instance
       # class NameRequiredError < Error; end
       # class UnparsableNameError < Error; end
 
@@ -14,17 +12,7 @@ module Intention
         @name = options.fetch(:name)
         @intention = options.fetch(:intention)
 
-        @intention.attribute_initialization.call(
-          attribute: self,
-          intention: @intention,
-          klass: @klass,
-        )
-
-        # @is_accessible = true
-        # @is_readable = true
-        # @is_writable = true
-
-        # reflux
+        @intention.attribute_initialization.call(attribute: self, klass: @klass)
       end
 
       # TODO: orthoganality here with `input_accessor` / `given_in?` / `value_in`?
@@ -36,50 +24,9 @@ module Intention
         input.key?(input_accessor)
       end
 
-      def value_in(input, *args, **kwargs, &block)
-        input.fetch(input_accessor, *args, **kwargs, &block)
+      def value_in(input, ...)
+        input.fetch(input_accessor, ...)
       end
-
-      # # TODO: orthoganality here with `define` / `define_getter` / `define_setter`?
-      # def define(method_name, options = {}, &block)
-      #   @klass.undef_method(method_name) if @klass.method_defined?(method_name)
-
-      #   @klass.define_method(method_name, &block)
-
-      #   @klass.__send__(:private, method_name) if options.fetch(:private, false)
-      # end
-
-      # def define_getter(options = {}, &block)
-      #   block ||= proc { |x| x }
-      #   local_name = name
-
-      #   define(name, options) do
-      #     block.call(instance_variable_get(:"@#{local_name}"))
-      #   end
-      # end
-
-      # def define_setter(options = {}, &block)
-      #   block ||= proc { |x| x }
-      #   local_name = name
-
-      #   define("#{name}=", options) do |value|
-      #     instance_variable_set(:"@#{local_name}", block.call(value))
-      #   end
-      # end
-
-      # def hash_accessor
-      #   renamed? ? renamed_from : name
-      # end
-
-      # def null(&block)
-      #   tap do
-      #     @null_callable = block if block
-      #   end
-      # end
-
-      # def nullable?
-      #   !!null_callable
-      # end
 
       # def renamed(from_key)
       #   tap do
@@ -111,42 +58,6 @@ module Intention
       #   @dumps_callable ||= proc { |value| value }
       # end
 
-      # def accessible(is_accessible = true) # rubocop:disable Style/OptionalBooleanParameter
-      #   tap do
-      #     reflux { @is_accessible = !!is_accessible }
-      #   end
-      # end
-
-      # def accessible?
-      #   @is_accessible
-      # end
-
-      # def readable(is_readable = true) # rubocop:disable Style/OptionalBooleanParameter
-      #   tap do
-      #     reflux { @is_readable = !!is_readable }
-      #   end
-      # end
-
-      # def readable?
-      #   @is_readable
-      # end
-
-      # def writable(is_writable = true) # rubocop:disable Style/OptionalBooleanParameter
-      #   tap do
-      #     reflux { @is_writable = !!is_writable }
-      #   end
-      # end
-
-      # def writable?
-      #   @is_writable
-      # end
-
-      # def withheld(is_withheld = true) # rubocop:disable Style/OptionalBooleanParameter
-      #   tap do
-      #     @is_withheld = !!is_withheld
-      #   end
-      # end
-
       # def withheld?
       #   !!is_withheld
       # end
@@ -155,7 +66,7 @@ module Intention
       #   default(&block).null(&block)
       # end
 
-      # def hidden(is_hidden = true) # rubocop:disable Style/OptionalBooleanParameter
+      # def hidden(is_hidden = true)
       #   withheld(is_hidden).readable(!is_hidden).writable(!is_hidden)
       # end
 

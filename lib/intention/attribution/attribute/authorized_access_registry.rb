@@ -1,9 +1,7 @@
-# frozen_string_literal: true
-
 module Intention
   module Attribution
     class Attribute
-      class AuthorizedAccessRegistry # rubocop:disable Style/Documentation
+      class AuthorizedAccessRegistry
         class UnauthorizedError < Error; end
 
         def initialize(key)

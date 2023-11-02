@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 using Intention::Refinements::StringRefinements::SnakeCase
 using Intention::Refinements::StringRefinements::PascalCase
 

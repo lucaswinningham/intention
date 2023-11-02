@@ -1,8 +1,6 @@
-# frozen_string_literal: true
-
 module Intention
   module Initialization
-    module VerifyInputHash # rubocop:disable Style/Documentation
+    module VerifyInputHash
       class << self
         def call(options = {})
           input_hash = options.fetch(:input_hash).transform_keys(&:to_sym)

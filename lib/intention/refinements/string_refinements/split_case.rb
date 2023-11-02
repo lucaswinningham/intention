@@ -1,9 +1,7 @@
-# frozen_string_literal: true
-
 module Intention
   module Refinements
     module StringRefinements
-      module SplitCase # rubocop:disable Style/Documentation
+      module SplitCase
         refine String do
           def split_case
             (self == upcase ? self : gsub(/([[:upper:]])/, '_\1')).then do |s|

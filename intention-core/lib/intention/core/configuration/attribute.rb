@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # require_relative 'initialization/add_accessors'
 
 module Intention
@@ -10,8 +8,8 @@ module Intention
           Intention::Attribute.registry.add(name)
 
           Intention::Attribute::Instance.define_method(name, &block)
-          Intention::Attribute::Proxy.define_method(name) do |*args, **kwargs, &block|
-            @attribute.public_send(name, *args, **kwargs, &block)
+          Intention::Attribute::Proxy.define_method(name) do |*args, **kwargs, &proxy_block|
+            @attribute.public_send(name, *args, **kwargs, &proxy_block)
           end
         end
 

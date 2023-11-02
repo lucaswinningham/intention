@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe '::required chained with ::default', type: :chain do
   let(:callable) { proc {} }
 

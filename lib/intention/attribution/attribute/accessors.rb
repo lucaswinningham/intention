@@ -1,9 +1,7 @@
-# frozen_string_literal: true
-
 module Intention
   module Attribution
     class Attribute
-      module Accessors # rubocop:disable Style/Documentation
+      module Accessors
         class << self
           def define(options)
             return unless options.fetch(:accessible, true)

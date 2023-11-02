@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe '::null chained with ::loads', type: :chain do
   let(:null_callable) { proc {} }
   let(:loads_callable) { proc {} }

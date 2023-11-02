@@ -1,10 +1,8 @@
-# frozen_string_literal: true
-
 require 'set'
 
 module Intention
   module Attribute
-    module Registry # rubocop:disable Style/Documentation
+    module Registry
       class << self
         def add(name)
           registry.add(name)

@@ -1,12 +1,10 @@
-# frozen_string_literal: true
-
 require_relative 'link/instance'
 
 module Intention
-  module Link # rubocop:disable Style/Documentation
+  module Link
     class << self
-      def new(*args, **kwargs, &block)
-        Instance.new(*args, **kwargs, &block)
+      def new(...)
+        Instance.new(...)
       end
     end
   end

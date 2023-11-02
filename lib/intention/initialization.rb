@@ -1,12 +1,10 @@
-# frozen_string_literal: true
-
 require_relative 'attribution'
 
 require_relative 'initialization/verify_input_hash'
 require_relative 'initialization/attribute_initialization'
 
 module Intention
-  module Initialization # rubocop:disable Style/Documentation
+  module Initialization
     class << self
       private
 
@@ -17,7 +15,7 @@ module Intention
       end
     end
 
-    module InstanceMethods # rubocop:disable Style/Documentation
+    module InstanceMethods
       def initialize(input_hash = {})
         VerifyInputHash.call(input_hash: input_hash, attributes: attributes) if self.class.strict?
 
