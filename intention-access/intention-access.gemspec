@@ -25,4 +25,6 @@ Gem::Specification.new do |spec|
   spec.bindir = 'bin'
   spec.executables = spec.files.grep(%r{\Abin/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
+
+  spec.add_dependency('middleware', '0.1.0')
 end

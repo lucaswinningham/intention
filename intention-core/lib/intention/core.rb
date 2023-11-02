@@ -35,7 +35,7 @@ module Intention
       base.define_method(:intention) { link }
       base.__send__(:private, :intention)
 
-      base.extend class_methods
+      base.extend(class_methods)
     end
 
     # rubocop:disable Metrics/MethodLength

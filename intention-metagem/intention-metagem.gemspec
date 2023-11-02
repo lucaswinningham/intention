@@ -26,8 +26,7 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{\Abin/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  # # TODO: address!
-
+  # TODO: address!
   dependency_version = "~> #{Intention::Version::STRING.split('.')[0..1].push('0').join('.')}"
 
   if Intention::Version::STRING =~ /[a-zA-Z]+/
@@ -35,6 +34,6 @@ Gem::Specification.new do |spec|
   end
 
   %w[core access ingestion validation].each do |name|
-    spec.add_runtime_dependency "intention-#{name}", dependency_version
+    spec.add_runtime_dependency("intention-#{name}", dependency_version)
   end
 end

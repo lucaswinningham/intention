@@ -48,5 +48,12 @@ Style/Documentation:
 Style/FrozenStringLiteralComment:
   EnforcedStyle: never
 
+Style/MethodCallWithArgsParentheses:
+  Enabled: true
+  AllowedMethods:
+    - raise
+    - to
+    - not_to
+
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: consistent_comma

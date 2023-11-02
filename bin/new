@@ -24,13 +24,10 @@ bin_dir = "#{new_dir}/bin"
 FileUtils.mkdir_p(bin_dir)
 
 bin_console_file = "#{bin_dir}/console"
-# puts "bin_console_file: #{bin_console_file}"
 
 unless File.file?(bin_console_file)
   File.open(bin_console_file, 'w') do |file|
     file.puts('#!/usr/bin/env ruby')
-    file.puts('')
-    file.puts('# frozen_string_literal: true')
     file.puts('')
     file.puts("require 'bundler/setup'")
     file.puts("require '#{slash_case_intention_name}'")
@@ -51,8 +48,6 @@ lib_intention_name_attribute_file = "#{lib_intention_name_dir}/attribute.rb"
 
 unless File.file?(lib_intention_name_attribute_file)
   File.open(lib_intention_name_attribute_file, 'w') do |file|
-    file.puts('# frozen_string_literal: true')
-    file.puts('')
     file.puts("require_relative 'data'")
     file.puts('')
     file.puts('module Intention')
@@ -71,8 +66,6 @@ lib_intention_name_data_file = "#{lib_intention_name_dir}/data.rb"
 
 unless File.file?(lib_intention_name_data_file)
   File.open(lib_intention_name_data_file, 'w') do |file|
-    file.puts('# frozen_string_literal: true')
-    file.puts('')
     file.puts('module Intention')
     file.puts("  module #{pascal_case_name}")
     file.puts('    class Data')
@@ -93,8 +86,6 @@ lib_intention_name_initialization_file = "#{lib_intention_name_dir}/initializati
 
 unless File.file?(lib_intention_name_initialization_file)
   File.open(lib_intention_name_initialization_file, 'w') do |file|
-    file.puts('# frozen_string_literal: true')
-    file.puts('')
     file.puts('module Intention')
     file.puts("  module #{pascal_case_name}")
     file.puts('    class Initialization')
@@ -122,8 +113,6 @@ lib_intention_name_version_file = "#{lib_intention_name_dir}/version.rb"
 
 unless File.file?(lib_intention_name_version_file)
   File.open(lib_intention_name_version_file, 'w') do |file|
-    file.puts('# frozen_string_literal: true')
-    file.puts('')
     file.puts('module Intention')
     file.puts("  module #{pascal_case_name}")
     file.puts('    module Version')
@@ -138,8 +127,6 @@ lib_intention_name_file = "#{lib_intention_dir}/#{name}.rb"
 
 unless File.file?(lib_intention_name_file)
   File.open(lib_intention_name_file, 'w') do |file|
-    file.puts('# frozen_string_literal: true')
-    file.puts('')
     file.puts("require 'intention/core'")
     file.puts('')
     file.puts("require_relative '#{name}/attribute'")
@@ -155,9 +142,9 @@ unless File.file?(lib_intention_name_file)
     file.puts('            configuration.attribute.include(Attribute)')
     file.puts("            configuration.attributes.scope(:#{name}) { |attribute| attribute.#{name}_data.set? }")
     file.puts('')
-    file.puts("            configuration.attribute.register(:#{name}) do |...|")
+    file.puts("            configuration.attribute.register(:#{name}) do |*args, **kwargs, &block|")
     file.puts('              tap do')
-    file.puts("                #{name}_data.set(...)")
+    file.puts("                #{name}_data.set(*args, **kwargs, &block)")
     file.puts('              end')
     file.puts('            end')
     file.puts('          end')
@@ -181,8 +168,6 @@ spec_intention_name_file = "#{spec_intention_dir}/#{name}_spec.rb"
 # TODO: fix
 unless File.file?(spec_intention_name_file)
   File.open(spec_intention_name_file, 'w') do |file|
-    file.puts('# frozen_string_literal: true')
-    file.puts('')
     file.puts('module Intention')
     file.puts("  describe #{pascal_case_name} do")
     file.puts("    describe '::#{name}' do")
@@ -211,8 +196,6 @@ spec_spec_helper_file = "#{spec_dir}/spec_helper.rb"
 
 unless File.file?(spec_spec_helper_file)
   File.open(spec_spec_helper_file, 'w') do |file|
-    file.puts('# frozen_string_literal: true')
-    file.puts('')
     file.puts("require 'bundler/setup'")
     file.puts("require 'intention/#{name}'")
     file.puts('')
@@ -239,8 +222,6 @@ gemfile_file = "#{new_dir}/Gemfile"
 
 unless File.file?(gemfile_file)
   File.open(gemfile_file, 'w') do |file|
-    file.puts('# frozen_string_literal: true')
-    file.puts('')
     file.puts("source 'https://rubygems.org'")
     file.puts('')
     file.puts('gemspec')
@@ -262,8 +243,6 @@ gemspec_file = "#{new_dir}/#{kebab_case_intention_name}.gemspec"
 
 unless File.file?(gemspec_file)
   File.open(gemspec_file, 'w') do |file|
-    file.puts('# frozen_string_literal: true')
-    file.puts('')
     file.puts("lib = File.expand_path('lib', __dir__)")
     file.puts('$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)')
     file.puts('')
