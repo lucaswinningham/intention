@@ -1,5 +1,4 @@
 require 'delegate'
-require 'middleware'
 
 require_relative 'attributes'
 
@@ -11,23 +10,17 @@ module Intention
       end
 
       def attribute_initialization
-        @attribute_initialization ||= begin
-          initial_middleware = Intention.configuration.attribute_initialization
-
-          InjectableMiddleware.new(initial_middleware).tap do |tapped|
-            tapped.injections.merge!(intention: self)
-          end
-        end
+        @attribute_initialization ||= InjectableMiddleware.new(
+          Intention.configuration.attribute_initialization,
+          intention: self,
+        )
       end
 
       def initialization
-        @initialization ||= begin
-          initial_middleware = Intention.configuration.initialization
-
-          InjectableMiddleware.new(initial_middleware).tap do |tapped|
-            tapped.injections.merge!(intention: self)
-          end
-        end
+        @initialization ||= InjectableMiddleware.new(
+          Intention.configuration.initialization,
+          intention: self,
+        )
       end
 
       def attributes
@@ -35,20 +28,18 @@ module Intention
       end
 
       class InjectableMiddleware < SimpleDelegator
-        def initialize(initial_middleware)
+        def initialize(initial_middleware, injections = {})
           super(
-            Middleware::Builder.new do
+            Support::Middleware::Builder.new do
               use(initial_middleware)
             end
           )
-        end
 
-        def injections
-          @injections ||= {}
+          @injections = injections
         end
 
         def call(payload = {})
-          super(payload.merge(injections))
+          super(payload.merge(@injections))
         end
       end
     end

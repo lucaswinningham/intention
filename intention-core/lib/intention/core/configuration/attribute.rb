@@ -1,5 +1,3 @@
-# require_relative 'initialization/add_accessors'
-
 module Intention
   module Configuration
     module Attribute

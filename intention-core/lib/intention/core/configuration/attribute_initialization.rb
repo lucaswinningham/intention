@@ -3,7 +3,7 @@ module Intention
     module AttributeInitialization
       class << self
         def middleware
-          @middleware ||= Middleware::Builder.new
+          @middleware ||= Support::Middleware::Builder.new
         end
       end
     end

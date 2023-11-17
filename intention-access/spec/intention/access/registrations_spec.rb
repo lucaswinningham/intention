@@ -46,8 +46,8 @@ module Intention
         include_examples('writable', :corge, false)
       end
 
-      describe '::ignore' do
-        subject(:klass) { Intention.new { ignore(:grault) } }
+      describe '::ignore_accessor' do
+        subject(:klass) { Intention.new { ignore_accessor(:grault) } }
 
         include_examples('readable', :grault, false)
         include_examples('writable', :grault, false)
@@ -91,8 +91,8 @@ module Intention
             include_examples('writable', :quux, false)
           end
 
-          describe 'is chained with ::ignore' do
-            subject(:klass) { Intention.new { accessible(:corge).ignore } }
+          describe 'is chained with ::ignore_accessor' do
+            subject(:klass) { Intention.new { accessible(:corge).ignore_accessor } }
 
             include_examples('readable', :corge, false)
             include_examples('writable', :corge, false)
@@ -135,8 +135,8 @@ module Intention
             include_examples('writable', :quux, false)
           end
 
-          describe 'is chained with ::ignore' do
-            subject(:klass) { Intention.new { inaccessible(:corge).ignore } }
+          describe 'is chained with ::ignore_accessor' do
+            subject(:klass) { Intention.new { inaccessible(:corge).ignore_accessor } }
 
             include_examples('readable', :corge, false)
             include_examples('writable', :corge, false)
@@ -179,8 +179,8 @@ module Intention
             include_examples('writable', :quux, false)
           end
 
-          describe 'is chained with ::ignore' do
-            subject(:klass) { Intention.new { readonly(:corge).ignore } }
+          describe 'is chained with ::ignore_accessor' do
+            subject(:klass) { Intention.new { readonly(:corge).ignore_accessor } }
 
             include_examples('readable', :corge, false)
             include_examples('writable', :corge, false)
@@ -223,8 +223,8 @@ module Intention
             include_examples('writable', :quux, false)
           end
 
-          describe 'is chained with ::ignore' do
-            subject(:klass) { Intention.new { writeonly(:corge).ignore } }
+          describe 'is chained with ::ignore_accessor' do
+            subject(:klass) { Intention.new { writeonly(:corge).ignore_accessor } }
 
             include_examples('readable', :corge, false)
             include_examples('writable', :corge, false)
@@ -267,8 +267,8 @@ module Intention
             include_examples('writable', :quux, false)
           end
 
-          describe 'is chained with ::ignore' do
-            subject(:klass) { Intention.new { ignore_reader(:corge).ignore } }
+          describe 'is chained with ::ignore_accessor' do
+            subject(:klass) { Intention.new { ignore_reader(:corge).ignore_accessor } }
 
             include_examples('readable', :corge, false)
             include_examples('writable', :corge, false)
@@ -311,52 +311,52 @@ module Intention
             include_examples('writable', :quux, false)
           end
 
-          describe 'is chained with ::ignore' do
-            subject(:klass) { Intention.new { ignore_writer(:corge).ignore } }
+          describe 'is chained with ::ignore_accessor' do
+            subject(:klass) { Intention.new { ignore_writer(:corge).ignore_accessor } }
 
             include_examples('readable', :corge, false)
             include_examples('writable', :corge, false)
           end
         end
 
-        describe 'when ::ignore' do
+        describe 'when ::ignore_accessor' do
           describe 'is chained with ::accessible' do
-            subject(:klass) { Intention.new { ignore(:foo).accessible } }
+            subject(:klass) { Intention.new { ignore_accessor(:foo).accessible } }
 
             include_examples('readable', :foo, false)
             include_examples('writable', :foo, false)
           end
 
           describe 'is chained with ::inaccessible' do
-            subject(:klass) { Intention.new { ignore(:bar).inaccessible } }
+            subject(:klass) { Intention.new { ignore_accessor(:bar).inaccessible } }
 
             include_examples('readable', :bar, false)
             include_examples('writable', :bar, false)
           end
 
           describe 'is chained with ::readonly' do
-            subject(:klass) { Intention.new { ignore(:baz).readonly } }
+            subject(:klass) { Intention.new { ignore_accessor(:baz).readonly } }
 
             include_examples('readable', :baz, false)
             include_examples('writable', :baz, false)
           end
 
           describe 'is chained with ::writeonly' do
-            subject(:klass) { Intention.new { ignore(:qux).writeonly } }
+            subject(:klass) { Intention.new { ignore_accessor(:qux).writeonly } }
 
             include_examples('readable', :qux, false)
             include_examples('writable', :qux, false)
           end
 
           describe 'is chained with ::ignore_reader' do
-            subject(:klass) { Intention.new { ignore(:quux).ignore_reader } }
+            subject(:klass) { Intention.new { ignore_accessor(:quux).ignore_reader } }
 
             include_examples('readable', :quux, false)
             include_examples('writable', :quux, false)
           end
 
           describe 'is chained with ::ignore_writer' do
-            subject(:klass) { Intention.new { ignore(:corge).ignore_writer } }
+            subject(:klass) { Intention.new { ignore_accessor(:corge).ignore_writer } }
 
             include_examples('readable', :corge, false)
             include_examples('writable', :corge, false)

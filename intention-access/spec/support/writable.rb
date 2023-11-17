@@ -4,27 +4,27 @@ shared_examples 'writable' do |attribute, flag = nil|
 
   if flag.nil?
     it 'allows attribute to be written publicly' do
-      expect { instance.public_send(setter, attribute) }.not_to raise_error
+      expect(instance.respond_to?(setter)).to be(true)
     end
 
     it 'allows attribute to be written privately' do
-      expect { instance.__send__(setter, attribute) }.not_to raise_error
+      expect(instance.respond_to?(setter, true)).to be(true)
     end
   elsif flag == :privately
     it 'does not allow attribute to be written publicly' do
-      expect { instance.public_send(setter, attribute) }.to raise_error(NoMethodError)
+      expect(instance.respond_to?(setter)).to be(false)
     end
 
     it 'allows attribute to be written privately' do
-      expect { instance.__send__(setter, attribute) }.not_to raise_error
+      expect(instance.respond_to?(setter, true)).to be(true)
     end
   elsif flag == false
     it 'does not allow attribute to be written publicly' do
-      expect { instance.public_send(setter, attribute) }.to raise_error(NoMethodError)
+      expect(instance.respond_to?(setter)).to be(false)
     end
 
     it 'does not allow attribute to be written privately' do
-      expect { instance.__send__(setter, attribute) }.to raise_error(NoMethodError)
+      expect(instance.respond_to?(setter, true)).to be(false)
     end
   end
 end

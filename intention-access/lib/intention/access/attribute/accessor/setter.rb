@@ -1,35 +1,35 @@
-require 'middleware'
-
 module Intention
   module Access
     module Attribute
       module Accessor
         class Setter
           def initialize(options = {})
-            @klass = options.fetch(:klass)
-            @name = options.fetch(:name)
+            @accessor = options.fetch(:accessor)
+            @attribute = options.fetch(:attribute)
           end
 
           def name
-            @setter_name ||= "#{@name}="
+            @name ||= "#{@accessor.name}="
           end
 
           def define
-            instance_variable_name = Accessor.instance_variable_name(@name)
+            instance_variable_name = @accessor.instance_variable_name
             setter_stack = middleware
+            local_attribute_reference = @attribute
 
-            @klass.define_method(name) do |value|
-              instance_variable_set(instance_variable_name, setter_stack.call(value: value))
+            @accessor.klass.define_method(name) do |value|
+              instance_variable_set(
+                instance_variable_name,
+                setter_stack.call(value: value, attribute: local_attribute_reference),
+              )
             end
           end
 
           def middleware
-            @middleware ||= Middleware::Builder.new do
-              use(IdentityMiddleware)
-            end
+            @middleware ||= Support::Middleware::Builder.new { use(ReturnValue) }
           end
 
-          class IdentityMiddleware
+          class ReturnValue
             def initialize(app)
               @app = app
             end

@@ -1,4 +1,4 @@
-require_relative 'null/data'
+require_relative 'null/setter'
 
 module Intention
   module Ingestion

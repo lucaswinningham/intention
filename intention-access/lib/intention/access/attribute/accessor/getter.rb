@@ -3,17 +3,18 @@ module Intention
     module Attribute
       module Accessor
         class Getter
-          attr_reader :name
-
           def initialize(options = {})
-            @klass = options.fetch(:klass)
-            @name = options.fetch(:name)
+            @accessor = options.fetch(:accessor)
+          end
+
+          def name
+            @name ||= @accessor.name
           end
 
           def define
-            instance_variable_name = Accessor.instance_variable_name(@name)
+            instance_variable_name = @accessor.instance_variable_name
 
-            @klass.define_method(name) do
+            @accessor.klass.define_method(name) do
               instance_variable_get(instance_variable_name)
             end
           end

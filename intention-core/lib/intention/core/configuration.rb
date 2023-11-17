@@ -1,5 +1,3 @@
-require 'middleware'
-
 require_relative 'configuration/attribute'
 require_relative 'configuration/attribute_initialization'
 require_relative 'configuration/initialization'
@@ -14,10 +12,6 @@ module Intention
       def attribute_initialization
         @attribute_initialization ||= AttributeInitialization.middleware
       end
-
-      # def ingestion
-      #   Ingestion
-      # end
 
       def initialization
         @initialization ||= Initialization.middleware

@@ -12,6 +12,11 @@ PATH
   remote: /Users/luke/code/intention/intention-core
   specs:
     intention-core (0.1.0)
+
+PATH
+  remote: /Users/luke/code/intention/intention-support
+  specs:
+    intention-support (0.1.0)
       middleware (= 0.1.0)
 
 GEM
@@ -41,6 +46,7 @@ DEPENDENCIES
   intention-access!
   intention-core!
   intention-ingestion!
+  intention-support!
   rake (~> 13.0)
   rspec (~> 3.4)
 

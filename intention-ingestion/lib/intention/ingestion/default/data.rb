@@ -3,11 +3,11 @@ module Intention
     module Default
       class Data
         def set?
-          @set
+          !!@set
         end
 
         def set(&block)
-          @callable = block || proc {}
+          @callable = block
 
           @set = true
         end

@@ -1,6 +1,9 @@
 require 'intention/core'
 require 'intention/access'
 
+require_relative 'ingestion/loads'
+require_relative 'ingestion/null'
+
 require_relative 'ingestion/attribute'
 require_relative 'ingestion/initialization'
 
@@ -14,10 +17,6 @@ module Intention
           Intention.configure do |configuration|
             configuration.initialization.use(Initialization)
             configuration.attribute.include(Attribute)
-            # # TODO: uncomment when we've figured out attributes scopes
-            # # TODO: also add `writable` (and others) scope to `intention-access`
-            # configuration.attributes.scope(:default) { |attribute| attribute.default_data.set? }
-            # configuration.attributes.scope(:null) { |attribute| attribute.null_data.set? }
           end
 
           configure_attribute_registrations
@@ -29,16 +28,27 @@ module Intention
       private
 
       def configure_attribute_registrations
+        configure_loads
         configure_default
         configure_null
         configure_coerce
+      end
+
+      def configure_loads
+        Intention.configure do |configuration|
+          configuration.attribute.register(:loads) do |&block|
+            tap do
+              accessor.setter.middleware.use(Loads::Setter, &block) unless block.nil?
+            end
+          end
+        end
       end
 
       def configure_default
         Intention.configure do |configuration|
           configuration.attribute.register(:default) do |&block|
             tap do
-              default_data.set(&block)
+              default_data.set(&block) unless block.nil?
             end
           end
         end
@@ -48,7 +58,7 @@ module Intention
         Intention.configure do |configuration|
           configuration.attribute.register(:null) do |&block|
             tap do
-              null_data.set(&block)
+              accessor.setter.middleware.use(Null::Setter, &block) unless block.nil?
             end
           end
         end

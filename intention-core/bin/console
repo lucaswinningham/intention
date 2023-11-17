@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'bundler/setup'
-require 'intention'
+require 'intention/core'
 
 require 'irb'
 IRB.start(__FILE__)

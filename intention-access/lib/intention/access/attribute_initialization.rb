@@ -8,8 +8,8 @@ module Intention
       def call(payload)
         attribute = payload.fetch(:attribute)
 
-        attribute.getter.define
-        attribute.setter.define
+        attribute.accessor.getter.define
+        attribute.accessor.setter.define
         attribute.accessible
 
         @app.call(payload)

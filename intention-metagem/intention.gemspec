@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
     dependency_version = "= #{Intention::Version::STRING}"
   end
 
-  %w[core access ingestion validation].each do |name|
+  %w[support core access ingestion validation].each do |name|
     spec.add_runtime_dependency("intention-#{name}", dependency_version)
   end
 end

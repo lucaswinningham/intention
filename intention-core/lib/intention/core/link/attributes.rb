@@ -1,6 +1,8 @@
 module Intention
   module Link
     class Attributes
+      include Enumerable
+
       def initialize(options = {})
         @intention = options.fetch(:intention)
         @klass = options.fetch(:klass)
@@ -13,7 +15,7 @@ module Intention
       end
 
       def each(&block)
-        attributes.each(&block)
+        attributes.each_value(&block)
       end
 
       def names
@@ -22,8 +24,6 @@ module Intention
 
       private
 
-      # TODO: set up mechanism (middleware?) for when attribute is added so
-      # TODO: we can query like `attributes.required` (for Initialization speed up)
       def attributes
         @attributes ||= Hash.new do |hash, name|
           hash[name] = Intention::Attribute.new(intention: @intention, klass: @klass, name: name)

@@ -4,9 +4,19 @@ PATH
     intention-validation (0.1.0)
 
 PATH
+  remote: /Users/luke/code/intention/intention-access
+  specs:
+    intention-access (0.1.0)
+
+PATH
   remote: /Users/luke/code/intention/intention-core
   specs:
     intention-core (0.1.0)
+
+PATH
+  remote: /Users/luke/code/intention/intention-support
+  specs:
+    intention-support (0.1.0)
       middleware (= 0.1.0)
 
 GEM
@@ -14,7 +24,6 @@ GEM
   specs:
     diff-lcs (1.5.0)
     middleware (0.1.0)
-    rake (13.1.0)
     rspec (3.12.0)
       rspec-core (~> 3.12.0)
       rspec-expectations (~> 3.12.0)
@@ -33,9 +42,10 @@ PLATFORMS
   arm64-darwin-23
 
 DEPENDENCIES
+  intention-access!
   intention-core!
+  intention-support!
   intention-validation!
-  rake (~> 13.0)
   rspec (~> 3.4)
 
 BUNDLED WITH

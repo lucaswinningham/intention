@@ -1,3 +1,5 @@
+require 'intention/support'
+
 require_relative 'core/attribute'
 require_relative 'core/configuration'
 require_relative 'core/link'

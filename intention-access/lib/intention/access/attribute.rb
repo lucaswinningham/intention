@@ -9,12 +9,18 @@ module Intention
         @decorated_klass ||= DecoratedKlass.new(@klass)
       end
 
-      def getter
-        @getter ||= Accessor.getter(klass: klass, name: name)
+      def accessor
+        @accessor ||= Accessor.new(klass: klass, name: name, attribute: self)
       end
 
-      def setter
-        @setter ||= Accessor.setter(klass: klass, name: name)
+      # TODO: test
+      def readable?
+        klass.any_method_defined?(accessor.getter.name)
+      end
+
+      # TODO: test
+      def writable?
+        klass.any_method_defined?(accessor.setter.name)
       end
     end
   end

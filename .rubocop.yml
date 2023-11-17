@@ -19,9 +19,6 @@ Metrics/ModuleLength:
 Naming/MemoizedInstanceVariableName:
   Enabled: false
 
-# NestedGroups:
-#   Max: 5
-
 RSpec/DescribeClass:
   IgnoredMetadata:
     type:
@@ -37,7 +34,7 @@ RSpec/SpecFilePathFormat:
   Enabled: false
 
 RSpec/NestedGroups:
-  Max: 6
+  Max: 7
 
 Style/BlockDelimiters:
   EnforcedStyle: braces_for_chaining
@@ -54,6 +51,12 @@ Style/MethodCallWithArgsParentheses:
     - raise
     - to
     - not_to
+
+Style/MultilineBlockChain:
+  Enabled: false
+
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: consistent_comma
 
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: consistent_comma

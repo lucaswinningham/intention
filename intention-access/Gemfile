@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gemspec
 
-%w[core].each do |lib_suffix|
+%w[support core].each do |lib_suffix|
   lib = "intention-#{lib_suffix}"
   library_path = File.expand_path("../#{lib}", __dir__)
 
@@ -10,6 +10,5 @@ gemspec
 end
 
 group :development do
-  gem 'rake', '~> 13.0'
   gem 'rspec', '~> 3.4'
 end

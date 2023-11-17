@@ -1,4 +1,5 @@
 require 'intention/core'
+require 'intention/support'
 
 require_relative 'access/attribute'
 require_relative 'access/attribute_initialization'
@@ -31,15 +32,15 @@ module Intention
 
         configure_ignore_reader
         configure_ignore_writer
-        configure_ignore
+        configure_ignore_accessor
       end
 
       def configure_accessible
         Intention.configure do |configuration|
           configuration.attribute.register(:accessible) do
             tap do
-              klass.publicize_method(getter.name)
-              klass.publicize_method(setter.name)
+              klass.publicize_method(accessor.getter.name)
+              klass.publicize_method(accessor.setter.name)
             end
           end
         end
@@ -49,8 +50,8 @@ module Intention
         Intention.configure do |configuration|
           configuration.attribute.register(:inaccessible) do
             tap do
-              klass.privatize_method(getter.name)
-              klass.privatize_method(setter.name)
+              klass.privatize_method(accessor.getter.name)
+              klass.privatize_method(accessor.setter.name)
             end
           end
         end
@@ -60,8 +61,8 @@ module Intention
         Intention.configure do |configuration|
           configuration.attribute.register(:readonly) do
             tap do
-              klass.publicize_method(getter.name)
-              klass.privatize_method(setter.name)
+              klass.publicize_method(accessor.getter.name)
+              klass.privatize_method(accessor.setter.name)
             end
           end
         end
@@ -71,16 +72,16 @@ module Intention
         Intention.configure do |configuration|
           configuration.attribute.register(:writeonly) do
             tap do
-              klass.privatize_method(getter.name)
-              klass.publicize_method(setter.name)
+              klass.privatize_method(accessor.getter.name)
+              klass.publicize_method(accessor.setter.name)
             end
           end
         end
       end
 
-      def configure_ignore
+      def configure_ignore_accessor
         Intention.configure do |configuration|
-          configuration.attribute.register(:ignore) do
+          configuration.attribute.register(:ignore_accessor) do
             tap do
               ignore_reader.ignore_writer
             end
@@ -92,7 +93,7 @@ module Intention
         Intention.configure do |configuration|
           configuration.attribute.register(:ignore_reader) do
             tap do
-              klass.undefine_method(getter.name)
+              klass.undefine_method(accessor.getter.name)
             end
           end
         end
@@ -102,7 +103,7 @@ module Intention
         Intention.configure do |configuration|
           configuration.attribute.register(:ignore_writer) do
             tap do
-              klass.undefine_method(setter.name)
+              klass.undefine_method(accessor.setter.name)
             end
           end
         end
