@@ -503,14 +503,14 @@ Required.new
 # Traceback ...
 # Intention::Validation::RequiredAttributeError
 Required.new(needed: nil).needed
-# => :was_needed
+# => nil
 Required.new(needed: :given).needed
 # => :given
 ```
 
 ###### reject
 
-`reject!(CustomError = RejectedAttributeError, &block)` takes the optionally given error class (defaults to `Intention::Validation::RequiredAttributeError`) and the required given block and adds an entry in the accessor writer middleware chain. If the current value in the accessor writer middleware chain matches the return value of called given block, it raises the error class. The given block is called with the current value in the chain.
+`reject!(CustomError = RejectedAttributeError, &block)` takes the optionally given error class (defaults to `Intention::Validation::RejectedAttributeError`) and the required given block and adds an entry in the accessor writer middleware chain. The block is given the current value in the accessor writer middleware chain and if the return value of the block is truthy, it raises the error class.
 
 Each use of `reject!` will add a new writer middleware chain entry. This is to add the ability to reject the value in different ways with different errors.
 
@@ -536,11 +536,11 @@ Reject.new(rejected: -1)
 
 ###### allow
 
-`allow!(CustomError = AllowedAttributeError, &block)` takes the optionally given error class (defaults to `Intention::Validation::RequiredAttributeError`) and the required given block and adds an entry in the accessor writer middleware chain. If the current value in the accessor writer middleware chain does not match the return value of called given block, it raises the error class. The given block is called with the current value in the chain.
+`allow!(CustomError = AllowedAttributeError, &block)` takes the optionally given error class (defaults to `Intention::Validation::AllowedAttributeError`) and the required given block and adds an entry in the accessor writer middleware chain. The block is given the current value in the accessor writer middleware chain and if the return value of the block is falsey, it raises the error class.
 
 Each use of `allow!` will add a new writer middleware chain entry. This is to add the ability to allow the value in different ways with different errors.
 
-Note: `allow!` is more restrictive than `reject!` as _all_ conditions need to be met for an error not to be raise whereas for `reject!`, an error is only raised iff _any_ condition is met.
+Note: `allow!` is more restrictive than `reject!` as _all_ conditions need to be met for an error _not_ to be raised whereas for `reject!`, an error is _only_ raised iff _any_ condition is met.
 
 ```rb
 Allow = Intention.new do
