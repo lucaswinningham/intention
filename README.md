@@ -359,21 +359,21 @@ IgnoreAccessor.new(illiterate: 2).instance_variable_get(:@illiterate)
 
 ###### loads
 
-`loads(&block)` takes the given block and adds a entry in the accessor writer middleware chain. The given block will be called whenever the accessor writer is called and will be given the current value in the accessor writer middleware chain. The new accessor writer middleware chain value will be the return value of the given block. The given block will not be given any arguments? Not even the current instance?
+`loads(&block)` takes the given block and adds an entry in the accessor writer middleware chain. The given block will be called whenever the accessor writer is called and will be given the current value in the accessor writer middleware chain. The new accessor writer middleware chain value will be the return value of the given block. The given block will not be given any arguments? Not even the current instance?
 
 Each use of `loads` will add a new writer middleware chain entry.
 
 ```rb
 Loads = Intention.new do
-  loads(:loaded) { :was_loaded }
+  loads(:loaded) { :was_loaded }.loads { :was_loaded_too }
 end
 
 Loads.new.loaded
 # => nil
 Loads.new(loaded: nil).loaded
- #=> :was_loaded
+ #=> :was_loaded_too
 Loads.new(loaded: :given).loaded
- #=> :was_loaded
+ #=> :was_loaded_too
 ```
 
 ###### default
@@ -384,11 +384,11 @@ Multiple uses of `default` will only observe the last usage.
 
 ```rb
 Default = Intention.new do
-  default(:defaulted) { :was_defaulted }
+  default(:defaulted) { :was_defaulted }.default { :was_defaulted_too }
 end
 
 Default.new.defaulted
-# => :was_defaulted
+# => :was_defaulted_too
 Default.new(defaulted: nil).defaulted
 # => nil
 Default.new(defaulted: :given).defaulted
@@ -396,7 +396,9 @@ Default.new(defaulted: :given).defaulted
 ```
 
 Note: because `default` is activated when
+
 > a key with the same name as the attribute does not exist in the given initialization input
+
 any configurations for the attribute which hook into the accessor writer middleware chain will also be activated: `loads`, `null`, etc. For example:
 
 ```rb
